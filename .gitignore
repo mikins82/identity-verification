@@ -1,0 +1,27 @@
+node_modules/
+dist/
+.turbo/
+*.tsbuildinfo
+
+# IDE
+.vscode/
+!.vscode/extensions.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Test
+coverage/
+test-results/
+playwright-report/
+
+# Build
+*.log
+dev-docs/
