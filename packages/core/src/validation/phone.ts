@@ -7,12 +7,20 @@ function stripNonDigits(value: string): string {
 }
 
 /**
- * Detects if the input already starts with the country's dial code
- * and strips it to avoid double-prefixing.
+ * Strips the dial-code prefix only when the digit count exceeds the
+ * country's maximum phone length — meaning the user (or paste handler)
+ * actually included the dial code.  Without the length guard, local
+ * numbers that happen to start with the same digits as the dial code
+ * (e.g. a Mexican number starting with "52") get incorrectly shortened.
  */
-function stripDialPrefix(digits: string, dialCode: string): string {
+function stripDialPrefix(
+  digits: string,
+  dialCode: string,
+  phoneLength: number | [number, number],
+): string {
   const dialDigits = stripNonDigits(dialCode);
-  if (digits.startsWith(dialDigits)) {
+  const maxLen = Array.isArray(phoneLength) ? phoneLength[1] : phoneLength;
+  if (digits.startsWith(dialDigits) && digits.length > maxLen) {
     return digits.slice(dialDigits.length);
   }
   return digits;
@@ -69,10 +77,9 @@ export function validatePhone(
     };
   }
 
-  digits = stripDialPrefix(digits, country.dialCode);
-  digits = stripLeadingZero(digits);
-
   const { phoneLength } = country;
+  digits = stripDialPrefix(digits, country.dialCode, phoneLength);
+  digits = stripLeadingZero(digits);
   if (Array.isArray(phoneLength)) {
     const lengthErr = lengthInRange(
       digits,
@@ -109,7 +116,7 @@ export function normalizeToE164(phone: string, countryCode: string): string {
   }
 
   let digits = stripNonDigits(phone);
-  digits = stripDialPrefix(digits, country.dialCode);
+  digits = stripDialPrefix(digits, country.dialCode, country.phoneLength);
   digits = stripLeadingZero(digits);
 
   const dialDigits = stripNonDigits(country.dialCode);

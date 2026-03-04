@@ -118,11 +118,30 @@ importers:
         specifier: ^3
         version: 3.2.4(@types/node@12.20.55)(jiti@2.6.1)(jsdom@26.1.0)(lightningcss@1.31.1)
 
+  packages/headless:
+    dependencies:
+      '@identity-verification/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      jsdom:
+        specifier: ^26.1.0
+        version: 26.1.0
+      tsup:
+        specifier: ^8
+        version: 8.5.1(@microsoft/api-extractor@7.57.6(@types/node@12.20.55))(jiti@2.6.1)(postcss@8.5.8)(typescript@5.9.3)
+      vitest:
+        specifier: ^3
+        version: 3.2.4(@types/node@12.20.55)(jiti@2.6.1)(jsdom@26.1.0)(lightningcss@1.31.1)
+
   packages/react:
     dependencies:
       '@identity-verification/core':
         specifier: workspace:*
         version: link:../core
+      '@identity-verification/headless':
+        specifier: workspace:*
+        version: link:../headless
     devDependencies:
       '@testing-library/jest-dom':
         specifier: ^6

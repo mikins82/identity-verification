@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
+import {
+  BrowserPermissionAdapter,
+  type PermissionState,
+} from "@identity-verification/headless";
 
-export type PermissionState = "prompt" | "granted" | "denied" | "unavailable";
+export type { PermissionState };
 
 export function useMediaPermission(): PermissionState {
   const [state, setState] = useState<PermissionState>(() => {
@@ -11,30 +15,20 @@ export function useMediaPermission(): PermissionState {
   });
 
   useEffect(() => {
-    if (typeof navigator === "undefined" || !navigator.permissions) return;
-
+    const adapter = new BrowserPermissionAdapter();
     let mounted = true;
-    let removeListener: (() => void) | undefined;
 
-    navigator.permissions
-      .query({ name: "camera" as PermissionName })
-      .then((status) => {
-        if (!mounted) return;
-        setState(status.state as PermissionState);
+    adapter.query().then((result) => {
+      if (mounted) setState(result);
+    });
 
-        const onChange = () => {
-          if (mounted) setState(status.state as PermissionState);
-        };
-        status.addEventListener("change", onChange);
-        removeListener = () => status.removeEventListener("change", onChange);
-      })
-      .catch(() => {
-        /* permissions.query for camera not supported in all browsers */
-      });
+    const unsub = adapter.subscribe((next) => {
+      if (mounted) setState(next);
+    });
 
     return () => {
       mounted = false;
-      removeListener?.();
+      unsub();
     };
   }, []);
 

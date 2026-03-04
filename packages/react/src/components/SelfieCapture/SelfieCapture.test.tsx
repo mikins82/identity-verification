@@ -40,7 +40,7 @@ function setupCameraMocks(stream?: MediaStream) {
   });
   HTMLVideoElement.prototype.play = vi.fn().mockResolvedValue(undefined);
 
-  const mockCtx = { drawImage: vi.fn() };
+  const mockCtx = { translate: vi.fn(), scale: vi.fn(), drawImage: vi.fn() };
   HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(mockCtx);
   HTMLCanvasElement.prototype.toDataURL = vi
     .fn()

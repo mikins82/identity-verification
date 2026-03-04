@@ -22,7 +22,13 @@ export default defineConfig({
     },
     cssFileName: "styles",
     rollupOptions: {
-      external: ["react", "react-dom", "react/jsx-runtime", "@identity-verification/core"],
+      external: [
+        "react",
+        "react-dom",
+        "react/jsx-runtime",
+        "@identity-verification/core",
+        "@identity-verification/headless",
+      ],
     },
   },
 });

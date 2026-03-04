@@ -5,6 +5,7 @@ import {
   type CountryCode,
   type ValidationResult,
 } from "@identity-verification/core";
+import { BrowserLocaleAdapter } from "@identity-verification/headless";
 import { Dropdown } from "../shared/Dropdown";
 import { FormField } from "../shared/FormField";
 import styles from "./PhoneInput.module.css";
@@ -17,16 +18,16 @@ export interface PhoneInputProps {
   className?: string;
 }
 
-function detectDefaultCountry(): string {
-  if (typeof navigator === "undefined") return "US";
-  const lang = navigator.language;
-  const region = lang.split("-")[1]?.toUpperCase();
-  if (region && COUNTRIES.some((c) => c.code === region)) return region;
-  return "US";
-}
+const localeAdapter = new BrowserLocaleAdapter();
 
 function stripNonDigits(value: string): string {
   return value.replace(/\D/g, "");
+}
+
+function getMaxDigits(country: CountryCode): number {
+  return Array.isArray(country.phoneLength)
+    ? country.phoneLength[1]
+    : country.phoneLength;
 }
 
 export function PhoneInput({
@@ -36,7 +37,7 @@ export function PhoneInput({
   onValidationChange,
   className,
 }: PhoneInputProps) {
-  const initialCountry = defaultCountry ?? detectDefaultCountry();
+  const initialCountry = defaultCountry ?? localeAdapter.getDefaultCountryCode();
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>(
     () => COUNTRIES.find((c) => c.code === initialCountry) ?? COUNTRIES[0],
   );
@@ -51,7 +52,8 @@ export function PhoneInput({
   const handleCountryChange = useCallback(
     (country: CountryCode) => {
       setSelectedCountry(country);
-      const digits = stripNonDigits(phoneValue);
+      const digits = stripNonDigits(phoneValue).slice(0, getMaxDigits(country));
+      setInternalValue(digits);
       onChange(digits, country.code);
       if (touched && digits) {
         const result = validatePhone(digits, country.code);
@@ -66,11 +68,19 @@ export function PhoneInput({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const raw = e.target.value;
       const cleaned = raw.replace(/[^\d\s\-()]/g, "");
-      setInternalValue(cleaned);
       const digits = stripNonDigits(cleaned);
+      if (digits.length > getMaxDigits(selectedCountry)) return;
+      setInternalValue(cleaned);
       onChange(digits, selectedCountry.code);
+      if (touched && error && digits) {
+        const result = validatePhone(digits, selectedCountry.code);
+        if (result.valid) {
+          setError(undefined);
+          onValidationChange?.(result);
+        }
+      }
     },
-    [selectedCountry, onChange],
+    [selectedCountry, onChange, touched, error, onValidationChange],
   );
 
   const handleBlur = useCallback(() => {
@@ -101,7 +111,7 @@ export function PhoneInput({
       for (const country of sortedCountries) {
         const dialDigits = stripNonDigits(country.dialCode);
         if (digits.startsWith(dialDigits)) {
-          const phoneDigits = digits.slice(dialDigits.length);
+          const phoneDigits = digits.slice(dialDigits.length).slice(0, getMaxDigits(country));
           if (selectedCountry.dialCode === country.dialCode) {
             setInternalValue(phoneDigits);
             onChange(phoneDigits, selectedCountry.code);
@@ -114,8 +124,9 @@ export function PhoneInput({
         }
       }
 
-      setInternalValue(digits);
-      onChange(digits, selectedCountry.code);
+      const truncated = digits.slice(0, getMaxDigits(selectedCountry));
+      setInternalValue(truncated);
+      onChange(truncated, selectedCountry.code);
     },
     [selectedCountry, onChange],
   );

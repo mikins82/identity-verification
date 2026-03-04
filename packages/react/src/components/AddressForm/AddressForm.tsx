@@ -6,6 +6,7 @@ import {
   type CountryCode,
   type ValidationResult,
 } from "@identity-verification/core";
+import { BrowserLocaleAdapter } from "@identity-verification/headless";
 import { Dropdown } from "../shared/Dropdown";
 import { FormField } from "../shared/FormField";
 import styles from "./AddressForm.module.css";
@@ -30,13 +31,7 @@ const POSTAL_HINTS: Record<string, string> = {
   MX: "e.g., 06600",
 };
 
-function detectDefaultCountry(): string {
-  if (typeof navigator === "undefined") return "US";
-  const lang = navigator.language;
-  const region = lang.split("-")[1]?.toUpperCase();
-  if (region && COUNTRIES.some((c) => c.code === region)) return region;
-  return "US";
-}
+const localeAdapter = new BrowserLocaleAdapter();
 
 export function AddressForm({
   value,
@@ -45,7 +40,7 @@ export function AddressForm({
   defaultCountry,
   className,
 }: AddressFormProps) {
-  const initialCountry = defaultCountry ?? detectDefaultCountry();
+  const initialCountry = defaultCountry ?? localeAdapter.getDefaultCountryCode();
   const [address, setAddress] = useState<Address>({
     street: value?.street ?? "",
     city: value?.city ?? "",
@@ -66,13 +61,19 @@ export function AddressForm({
 
   const updateField = useCallback(
     (field: keyof Address, fieldValue: string) => {
-      setAddress((prev: Address) => {
-        const updated = { ...prev, [field]: fieldValue };
-        onChange(updated);
-        return updated;
-      });
+      const updated = { ...address, [field]: fieldValue };
+      setAddress(updated);
+      onChange(updated);
+      if (touchedFields.has(field) && fieldErrors[field]) {
+        const result = validateAddress(updated, updated.country);
+        const stillInvalid = result.errors.some((e) => e.field === field);
+        if (!stillInvalid) {
+          setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
+          onValidationChange?.(result);
+        }
+      }
     },
-    [onChange],
+    [address, onChange, touchedFields, fieldErrors, onValidationChange],
   );
 
   const validateAndSetErrors = useCallback(

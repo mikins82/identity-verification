@@ -31,7 +31,8 @@
     "react-dom": ">=18.0.0"
   },
   "dependencies": {
-    "@identity-verification/core": "workspace:*"
+    "@identity-verification/core": "workspace:*",
+    "@identity-verification/headless": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

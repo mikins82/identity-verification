@@ -1,7 +1,9 @@
 import { type ReactNode, useMemo } from "react";
-import { defaultTheme } from "./defaultTheme";
-import { themeToCustomProperties } from "./themeToCustomProperties";
-import type { Theme } from "./theme.types";
+import {
+  defaultTheme,
+  themeToCustomProperties,
+  type Theme,
+} from "@identity-verification/headless";
 
 export interface ThemeProviderProps {
   theme?: Partial<Theme>;

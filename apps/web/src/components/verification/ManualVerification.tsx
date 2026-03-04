@@ -20,6 +20,8 @@ import {
 import {
   getIdentityData,
   VerificationError,
+  validatePhone,
+  validateAddress,
   type Address,
   type IdentityData,
 } from "@identity-verification/core";
@@ -82,15 +84,9 @@ export function ManualVerification({
       case "selfie":
         return selfie !== null;
       case "phone":
-        return phone.length >= 7;
+        return phone.length > 0 && validatePhone(phone, countryCode).valid;
       case "address":
-        return (
-          address.street.trim().length > 0 &&
-          address.city.trim().length > 0 &&
-          address.state.trim().length > 0 &&
-          address.country.trim().length > 0 &&
-          address.postalCode.trim().length > 0
-        );
+        return validateAddress(address, address.country).valid;
     }
   };
 

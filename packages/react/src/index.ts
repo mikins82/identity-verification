@@ -10,12 +10,7 @@ export type { AddressFormProps } from "./components/AddressForm";
 export { VerificationFlow } from "./components/VerificationFlow";
 export type { VerificationFlowProps } from "./components/VerificationFlow";
 export { StepIndicator } from "./components/VerificationFlow";
-export type {
-  StepIndicatorProps,
-  VerificationStep,
-  VerificationState,
-  VerificationAction,
-} from "./components/VerificationFlow";
+export type { StepIndicatorProps } from "./components/VerificationFlow";
 
 export { FormField } from "./components/shared/FormField";
 export type { FormFieldProps } from "./components/shared/FormField";
@@ -25,13 +20,40 @@ export type { DropdownProps } from "./components/shared/Dropdown";
 
 export { ThemeProvider } from "./theme/ThemeProvider";
 export type { ThemeProviderProps } from "./theme/ThemeProvider";
-export type { Theme, ThemeColors, ThemeSpacing } from "./theme/theme.types";
-export { defaultTheme } from "./theme/defaultTheme";
 
 export { useCamera } from "./hooks/useCamera";
-export type { CameraState, CameraError } from "./hooks/useCamera";
 export { useMediaPermission } from "./hooks/useMediaPermission";
-export type { PermissionState } from "./hooks/useMediaPermission";
+
+export {
+  defaultTheme,
+  themeToCustomProperties,
+  CameraController,
+  verificationReducer,
+  initialVerificationState,
+  canAdvance,
+  STEP_ORDER,
+  BrowserCameraAdapter,
+  BrowserPermissionAdapter,
+  BrowserLocaleAdapter,
+  createBrowserAdapters,
+} from "@identity-verification/headless";
+
+export type {
+  Theme,
+  ThemeColors,
+  ThemeSpacing,
+  CameraState,
+  CameraError,
+  CameraOptions,
+  CameraAdapter,
+  CameraStreamOptions,
+  PermissionState,
+  PermissionAdapter,
+  LocaleAdapter,
+  VerificationState,
+  VerificationAction,
+  VerificationStep,
+} from "@identity-verification/headless";
 
 export type {
   Address,
