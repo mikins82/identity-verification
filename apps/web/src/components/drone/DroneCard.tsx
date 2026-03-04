@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Stepper } from "@/components/ui/stepper";
 import type { Drone } from "@/data/drones";
 import { isCargoDrone, isFilmingDrone } from "@/data/drones";
@@ -67,7 +68,7 @@ export function DroneCard({ drone }: DroneCardProps) {
       </CardHeader>
 
       <CardContent className="flex-1">
-        <div className="grid grid-cols-2 gap-2 text-sm">
+        <div className="grid grid-cols-1 gap-2 text-sm">
           {isFilmingDrone(drone) && (
             <>
               <SpecItem
@@ -94,7 +95,7 @@ export function DroneCard({ drone }: DroneCardProps) {
           )}
           {isCargoDrone(drone) && (
             <>
-              <div className="col-span-2 rounded-md bg-muted px-3 py-2 text-center">
+              <div className="rounded-md bg-muted px-3 py-2 text-center">
                 <span className="text-2xl font-bold">{drone.specs.maxPayload} kg</span>
                 <span className="block text-xs text-muted-foreground">max payload</span>
               </div>
@@ -136,9 +137,40 @@ function SpecItem({ icon, label, value }: { icon: React.ReactNode; label: string
     <div className="flex items-center gap-1.5 text-muted-foreground">
       {icon}
       <span>
-        <span className="font-medium text-foreground">{value}</span>{" "}
-        <span className="text-xs">{label}</span>
+        <span className="text-xs">{label}</span>{" "}
+        <span className="font-medium text-foreground">{value}</span>
       </span>
     </div>
+  );
+}
+
+export function DroneCardSkeleton() {
+  return (
+    <Card className="flex flex-col overflow-hidden">
+      <Skeleton className="aspect-4/3 rounded-none" />
+
+      <CardHeader className="pb-2">
+        <div className="flex items-start justify-between gap-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-5 w-16" />
+        </div>
+        <Skeleton className="mt-2 h-4 w-full" />
+        <Skeleton className="mt-1 h-4 w-3/4" />
+      </CardHeader>
+
+      <CardContent className="flex-1">
+        <div className="grid grid-cols-1 gap-2">
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-4 w-48" />
+          <Skeleton className="h-4 w-36" />
+          <Skeleton className="h-4 w-28" />
+        </div>
+      </CardContent>
+
+      <CardFooter className="flex items-center justify-between gap-3 border-t pt-4">
+        <Skeleton className="h-8 w-24" />
+        <Skeleton className="h-8 w-24" />
+      </CardFooter>
+    </Card>
   );
 }
