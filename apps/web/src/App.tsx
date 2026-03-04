@@ -1,3 +1,6 @@
+import { RouterProvider } from "react-router";
+import { router } from "./router";
+
 export function App() {
-  return <div>SkyRent Drones</div>;
+  return <RouterProvider router={router} />;
 }
