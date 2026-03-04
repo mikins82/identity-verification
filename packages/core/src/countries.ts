@@ -1,0 +1,175 @@
+import type { CountryCode } from "./types";
+
+export const COUNTRIES: CountryCode[] = [
+  {
+    code: "US",
+    name: "United States",
+    dialCode: "+1",
+    flag: "🇺🇸",
+    phoneLength: 10,
+    postalRegex: /^\d{5}(-\d{4})?$/,
+  },
+  {
+    code: "CA",
+    name: "Canada",
+    dialCode: "+1",
+    flag: "🇨🇦",
+    phoneLength: 10,
+    postalRegex: /^[A-Z]\d[A-Z]\s?\d[A-Z]\d$/i,
+  },
+  {
+    code: "GB",
+    name: "United Kingdom",
+    dialCode: "+44",
+    flag: "🇬🇧",
+    phoneLength: [10, 11],
+    postalRegex: /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i,
+  },
+  {
+    code: "MX",
+    name: "Mexico",
+    dialCode: "+52",
+    flag: "🇲🇽",
+    phoneLength: 10,
+    postalRegex: /^\d{5}$/,
+  },
+  {
+    code: "DE",
+    name: "Germany",
+    dialCode: "+49",
+    flag: "🇩🇪",
+    phoneLength: [10, 11],
+    postalRegex: /^\d{5}$/,
+  },
+  {
+    code: "FR",
+    name: "France",
+    dialCode: "+33",
+    flag: "🇫🇷",
+    phoneLength: 9,
+    postalRegex: /^\d{5}$/,
+  },
+  {
+    code: "ES",
+    name: "Spain",
+    dialCode: "+34",
+    flag: "🇪🇸",
+    phoneLength: 9,
+    postalRegex: /^\d{5}$/,
+  },
+  {
+    code: "IT",
+    name: "Italy",
+    dialCode: "+39",
+    flag: "🇮🇹",
+    phoneLength: [9, 10],
+    postalRegex: /^\d{5}$/,
+  },
+  {
+    code: "BR",
+    name: "Brazil",
+    dialCode: "+55",
+    flag: "🇧🇷",
+    phoneLength: [10, 11],
+    postalRegex: /^\d{5}-?\d{3}$/,
+  },
+  {
+    code: "AR",
+    name: "Argentina",
+    dialCode: "+54",
+    flag: "🇦🇷",
+    phoneLength: [10, 11],
+    postalRegex: /^[A-Z]\d{4}[A-Z]{3}$/i,
+  },
+  {
+    code: "AU",
+    name: "Australia",
+    dialCode: "+61",
+    flag: "🇦🇺",
+    phoneLength: 9,
+    postalRegex: /^\d{4}$/,
+  },
+  {
+    code: "JP",
+    name: "Japan",
+    dialCode: "+81",
+    flag: "🇯🇵",
+    phoneLength: [10, 11],
+    postalRegex: /^\d{3}-?\d{4}$/,
+  },
+  {
+    code: "KR",
+    name: "South Korea",
+    dialCode: "+82",
+    flag: "🇰🇷",
+    phoneLength: [9, 10],
+    postalRegex: /^\d{5}$/,
+  },
+  {
+    code: "IN",
+    name: "India",
+    dialCode: "+91",
+    flag: "🇮🇳",
+    phoneLength: 10,
+    postalRegex: /^\d{6}$/,
+  },
+  {
+    code: "CN",
+    name: "China",
+    dialCode: "+86",
+    flag: "🇨🇳",
+    phoneLength: 11,
+    postalRegex: /^\d{6}$/,
+  },
+  {
+    code: "NL",
+    name: "Netherlands",
+    dialCode: "+31",
+    flag: "🇳🇱",
+    phoneLength: 9,
+    postalRegex: /^\d{4}\s?[A-Z]{2}$/i,
+  },
+  {
+    code: "SE",
+    name: "Sweden",
+    dialCode: "+46",
+    flag: "🇸🇪",
+    phoneLength: [7, 10],
+    postalRegex: /^\d{3}\s?\d{2}$/,
+  },
+  {
+    code: "CH",
+    name: "Switzerland",
+    dialCode: "+41",
+    flag: "🇨🇭",
+    phoneLength: 9,
+    postalRegex: /^\d{4}$/,
+  },
+  {
+    code: "PL",
+    name: "Poland",
+    dialCode: "+48",
+    flag: "🇵🇱",
+    phoneLength: 9,
+    postalRegex: /^\d{2}-?\d{3}$/,
+  },
+  {
+    code: "CO",
+    name: "Colombia",
+    dialCode: "+57",
+    flag: "🇨🇴",
+    phoneLength: 10,
+    postalRegex: /^\d{6}$/,
+  },
+];
+
+export function findCountryByCode(code: string): CountryCode | undefined {
+  return COUNTRIES.find(
+    (c) => c.code.toUpperCase() === code.toUpperCase(),
+  );
+}
+
+export function findCountriesByDialCode(dialCode: string): CountryCode[] {
+  const normalized = dialCode.startsWith("+") ? dialCode : `+${dialCode}`;
+  return COUNTRIES.filter((c) => c.dialCode === normalized);
+}
