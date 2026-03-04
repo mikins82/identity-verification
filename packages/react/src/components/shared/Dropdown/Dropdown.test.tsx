@@ -165,4 +165,39 @@ describe("Dropdown", () => {
     fireEvent.click(trigger);
     expect(trigger).toHaveAttribute("aria-expanded", "true");
   });
+
+  it("jumps to first option on Home key", () => {
+    renderDropdown();
+    fireEvent.click(screen.getByRole("button", { name: "Select a fruit" }));
+    const searchInput = screen.getByRole("searchbox");
+
+    fireEvent.keyDown(searchInput, { key: "ArrowDown" });
+    fireEvent.keyDown(searchInput, { key: "ArrowDown" });
+    fireEvent.keyDown(searchInput, { key: "ArrowDown" });
+
+    const options = screen.getAllByRole("option");
+    expect(options[2]).toHaveClass("active");
+
+    fireEvent.keyDown(searchInput, { key: "Home" });
+    expect(options[0]).toHaveClass("active");
+  });
+
+  it("jumps to last option on End key", () => {
+    renderDropdown();
+    fireEvent.click(screen.getByRole("button", { name: "Select a fruit" }));
+    const searchInput = screen.getByRole("searchbox");
+
+    fireEvent.keyDown(searchInput, { key: "End" });
+    const options = screen.getAllByRole("option");
+    expect(options[3]).toHaveClass("active");
+  });
+
+  it("closes dropdown on Tab key", () => {
+    renderDropdown();
+    fireEvent.click(screen.getByRole("button", { name: "Select a fruit" }));
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+
+    fireEvent.keyDown(screen.getByRole("searchbox"), { key: "Tab" });
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
 });

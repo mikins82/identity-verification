@@ -7,6 +7,16 @@ export type { PhoneInputProps } from "./components/PhoneInput";
 export { AddressForm } from "./components/AddressForm";
 export type { AddressFormProps } from "./components/AddressForm";
 
+export { VerificationFlow } from "./components/VerificationFlow";
+export type { VerificationFlowProps } from "./components/VerificationFlow";
+export { StepIndicator } from "./components/VerificationFlow";
+export type {
+  StepIndicatorProps,
+  VerificationStep,
+  VerificationState,
+  VerificationAction,
+} from "./components/VerificationFlow";
+
 export { FormField } from "./components/shared/FormField";
 export type { FormFieldProps } from "./components/shared/FormField";
 

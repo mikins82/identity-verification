@@ -1,0 +1,102 @@
+.container {
+  font-family: var(--iv-font-family, system-ui, -apple-system, sans-serif);
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  gap: var(--iv-spacing-sm, 8px);
+}
+
+.connector {
+  width: 48px;
+  height: 2px;
+  background: var(--iv-color-border, #e5e7eb);
+  transition: background-color 0.3s ease;
+}
+
+.connectorCompleted {
+  background: var(--iv-color-primary, #0066ff);
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--iv-color-surface, #f9fafb);
+  border: 2px solid var(--iv-color-border, #e5e7eb);
+  color: var(--iv-color-text-secondary, #6b7280);
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.badgeActive {
+  background: var(--iv-color-primary, #0066ff);
+  border-color: var(--iv-color-primary, #0066ff);
+  color: #fff;
+}
+
+.badgeCompleted {
+  background: var(--iv-color-primary, #0066ff);
+  border-color: var(--iv-color-primary, #0066ff);
+  color: #fff;
+}
+
+.number {
+  line-height: 1;
+}
+
+.checkIcon {
+  width: 14px;
+  height: 14px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--iv-color-text-secondary, #6b7280);
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+.labelActive {
+  color: var(--iv-color-primary, #0066ff);
+  font-weight: 600;
+}
+
+.labelCompleted {
+  color: var(--iv-color-text, #111827);
+}
+
+@media (max-width: 480px) {
+  .connector {
+    width: 24px;
+  }
+
+  .label {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge,
+  .connector,
+  .label {
+    transition: none;
+  }
+}

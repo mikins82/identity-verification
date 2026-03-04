@@ -78,6 +78,9 @@ export function Dropdown<T>({
     [onChange, close],
   );
 
+  const typeAheadRef = useRef("");
+  const typeAheadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       switch (e.key) {
@@ -93,6 +96,18 @@ export function Dropdown<T>({
           e.preventDefault();
           setActiveIndex((prev) => Math.max(prev - 1, 0));
           break;
+        case "Home":
+          e.preventDefault();
+          if (isOpen && filtered.length > 0) {
+            setActiveIndex(0);
+          }
+          break;
+        case "End":
+          e.preventDefault();
+          if (isOpen && filtered.length > 0) {
+            setActiveIndex(filtered.length - 1);
+          }
+          break;
         case "Enter":
           e.preventDefault();
           if (isOpen && activeIndex >= 0 && activeIndex < filtered.length) {
@@ -105,9 +120,32 @@ export function Dropdown<T>({
           e.preventDefault();
           close();
           break;
+        case "Tab":
+          if (isOpen) close();
+          break;
+        default:
+          if (
+            e.key.length === 1 &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            !(e.target as HTMLElement)?.matches("input")
+          ) {
+            e.preventDefault();
+            if (typeAheadTimerRef.current) clearTimeout(typeAheadTimerRef.current);
+            typeAheadRef.current += e.key.toLowerCase();
+            const match = filtered.findIndex((opt) =>
+              filterFn(opt, typeAheadRef.current),
+            );
+            if (match >= 0) setActiveIndex(match);
+            typeAheadTimerRef.current = setTimeout(() => {
+              typeAheadRef.current = "";
+            }, 500);
+          }
+          break;
       }
     },
-    [isOpen, activeIndex, filtered, open, close, select],
+    [isOpen, activeIndex, filtered, open, close, select, filterFn],
   );
 
   useEffect(() => {
@@ -116,6 +154,13 @@ export function Dropdown<T>({
       activeElement?.scrollIntoView?.({ block: "nearest" });
     }
   }, [activeIndex]);
+
+  useEffect(() => {
+    const ref = typeAheadTimerRef;
+    return () => {
+      if (ref.current) clearTimeout(ref.current);
+    };
+  }, []);
 
   const listboxId = `${id}-listbox`;
   const activeId = activeIndex >= 0 ? `${id}-option-${activeIndex}` : undefined;

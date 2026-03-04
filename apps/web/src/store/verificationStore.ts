@@ -1,18 +1,7 @@
 import { create } from "zustand";
+import type { IdentityData } from "@identity-verification/core";
 
-export interface IdentityData {
-  selfieUrl: string;
-  phone: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    country: string;
-    postalCode: string;
-  };
-  score: number;
-  status: "verified" | "failed";
-}
+export type { IdentityData } from "@identity-verification/core";
 
 interface VerificationState {
   identityData: IdentityData | null;

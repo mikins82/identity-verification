@@ -1,0 +1,225 @@
+.container {
+  font-family: var(--iv-font-family, system-ui, -apple-system, sans-serif);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.viewport {
+  overflow: hidden;
+  margin-top: var(--iv-spacing-lg, 24px);
+}
+
+.track {
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+  will-change: transform;
+}
+
+.panel {
+  min-width: 100%;
+  flex-shrink: 0;
+  padding: var(--iv-spacing-md, 16px) 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--iv-spacing-lg, 24px);
+  gap: var(--iv-spacing-md, 16px);
+}
+
+.backButton,
+.nextButton {
+  padding: var(--iv-spacing-sm, 8px) var(--iv-spacing-lg, 24px);
+  border-radius: var(--iv-border-radius, 8px);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: background-color 0.15s, opacity 0.15s;
+}
+
+.backButton {
+  background: var(--iv-color-surface, #f9fafb);
+  color: var(--iv-color-text, #111827);
+  border: 1px solid var(--iv-color-border, #e5e7eb);
+}
+
+.backButton:hover:not(:disabled) {
+  background: var(--iv-color-border, #e5e7eb);
+}
+
+.backButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.nextButton {
+  background: var(--iv-color-primary, #0066ff);
+  color: #fff;
+}
+
+.nextButton:hover:not(:disabled) {
+  background: var(--iv-color-primary-hover, #0052cc);
+}
+
+.nextButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.backButton:focus-visible,
+.nextButton:focus-visible {
+  outline: 2px solid var(--iv-color-primary, #0066ff);
+  outline-offset: 2px;
+}
+
+/* Verifying state */
+
+.verifying {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--iv-spacing-xl, 32px);
+  min-height: 240px;
+  gap: var(--iv-spacing-md, 16px);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--iv-color-border, #e5e7eb);
+  border-top-color: var(--iv-color-primary, #0066ff);
+  border-radius: 50%;
+  animation: iv-flow-spin 0.8s linear infinite;
+}
+
+@keyframes iv-flow-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.verifyingText {
+  font-size: 15px;
+  color: var(--iv-color-text-secondary, #6b7280);
+  margin: 0;
+}
+
+/* Result states */
+
+.result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--iv-spacing-xl, 32px);
+  gap: var(--iv-spacing-md, 16px);
+  text-align: center;
+}
+
+.successIcon {
+  width: 48px;
+  height: 48px;
+  color: var(--iv-color-success, #16a34a);
+}
+
+.failIcon {
+  width: 48px;
+  height: 48px;
+  color: var(--iv-color-error, #dc2626);
+}
+
+.successIcon svg,
+.failIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.resultTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--iv-color-text, #111827);
+  margin: 0;
+}
+
+.resultScore {
+  font-size: 14px;
+  color: var(--iv-color-text-secondary, #6b7280);
+  margin: 0;
+}
+
+.retryButton {
+  margin-top: var(--iv-spacing-sm, 8px);
+  padding: var(--iv-spacing-sm, 8px) var(--iv-spacing-lg, 24px);
+  border-radius: var(--iv-border-radius, 8px);
+  background: var(--iv-color-primary, #0066ff);
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.15s;
+}
+
+.retryButton:hover {
+  background: var(--iv-color-primary-hover, #0052cc);
+}
+
+.retryButton:focus-visible {
+  outline: 2px solid var(--iv-color-primary, #0066ff);
+  outline-offset: 2px;
+}
+
+/* Selfie preview */
+
+.selfiePreview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--iv-spacing-sm, 8px);
+}
+
+.selfieImage {
+  width: 100%;
+  max-width: 320px;
+  border-radius: var(--iv-border-radius, 8px);
+}
+
+.retakeLink {
+  background: none;
+  border: none;
+  color: var(--iv-color-primary, #0066ff);
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  text-decoration: underline;
+  padding: var(--iv-spacing-xs, 4px);
+}
+
+.retakeLink:hover {
+  color: var(--iv-color-primary-hover, #0052cc);
+}
+
+.retakeLink:focus-visible {
+  outline: 2px solid var(--iv-color-primary, #0066ff);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    transition: none;
+  }
+
+  .spinner {
+    animation: none;
+  }
+
+  .backButton,
+  .nextButton,
+  .retryButton {
+    transition: none;
+  }
+}
