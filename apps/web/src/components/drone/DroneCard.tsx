@@ -29,7 +29,7 @@ export function DroneCard({ drone }: DroneCardProps) {
   };
 
   return (
-    <Card className="flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
+    <Card data-testid="drone-card" className="flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
       <div className="relative aspect-4/3 bg-muted overflow-hidden">
         {!imageError ? (
           <img

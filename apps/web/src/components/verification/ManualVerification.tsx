@@ -125,6 +125,10 @@ export function ManualVerification({
         countryCode,
         address,
       });
+      console.log(
+        "[getIdentityData] result:\n",
+        JSON.stringify(result, null, 2),
+      );
       onComplete(result);
     } catch (err) {
       const message =

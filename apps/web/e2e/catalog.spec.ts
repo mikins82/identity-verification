@@ -36,15 +36,12 @@ test.describe("Catalog Page", () => {
   test("day stepper increments and decrements", async ({ page }) => {
     const firstCard = page.locator("[data-testid='drone-card']").first();
 
-    if (await firstCard.count() === 0) {
-      const cards = page.locator(".card, [class*='Card']").first();
-      const increaseBtn = cards.getByLabel("Increase quantity");
-      await increaseBtn.click();
-      await increaseBtn.click();
+    const increaseBtn = firstCard.getByLabel("Increase quantity");
+    await increaseBtn.click();
+    await increaseBtn.click();
 
-      const decreaseBtn = cards.getByLabel("Decrease quantity");
-      await decreaseBtn.click();
-    }
+    const decreaseBtn = firstCard.getByLabel("Decrease quantity");
+    await decreaseBtn.click();
   });
 
   test("add to cart shows toast notification and updates cart badge", async ({

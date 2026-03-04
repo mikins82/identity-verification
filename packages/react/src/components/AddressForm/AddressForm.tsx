@@ -6,7 +6,7 @@ import {
   type CountryCode,
   type ValidationResult,
 } from "@identity-verification/core";
-import { BrowserLocaleAdapter } from "@identity-verification/headless";
+import { BrowserLocaleAdapter } from "@identity-verification/headless/web";
 import { Dropdown } from "../shared/Dropdown";
 import { FormField } from "../shared/FormField";
 import styles from "./AddressForm.module.css";

@@ -1,19 +1,14 @@
 import { useState, useEffect } from "react";
 import { type PermissionState } from "@identity-verification/headless";
-import { BrowserPermissionAdapter } from "@identity-verification/headless/web";
+import { ReactNativePermissionAdapter } from "@identity-verification/headless/react-native";
 
 export type { PermissionState };
 
 export function useMediaPermission(): PermissionState {
-  const [state, setState] = useState<PermissionState>(() => {
-    if (typeof navigator === "undefined" || !navigator.mediaDevices) {
-      return "unavailable";
-    }
-    return "prompt";
-  });
+  const [state, setState] = useState<PermissionState>("prompt");
 
   useEffect(() => {
-    const adapter = new BrowserPermissionAdapter();
+    const adapter = new ReactNativePermissionAdapter();
     let mounted = true;
 
     adapter.query().then((result) => {

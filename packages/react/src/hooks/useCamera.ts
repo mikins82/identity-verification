@@ -1,11 +1,11 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import {
   CameraController,
-  BrowserCameraAdapter,
   type CameraState,
   type CameraError,
   type CameraOptions,
 } from "@identity-verification/headless";
+import { BrowserCameraAdapter } from "@identity-verification/headless/web";
 
 export type { CameraState, CameraError };
 
