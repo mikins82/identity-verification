@@ -1,15 +1,17 @@
-import { Trash2 } from "lucide-react";
+import { Camera, Package, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Stepper } from "@/components/ui/stepper";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { useCartStore, type CartItem as CartItemType } from "@/store/cartStore";
+import { useState } from "react";
 
 export interface CartItemProps {
   item: CartItemType;
 }
 
 export function CartItem({ item }: CartItemProps) {
+  const [imageError, setImageError] = useState(false);
   const updateDays = useCartStore((s) => s.updateDays);
   const removeItem = useCartStore((s) => s.removeItem);
 
@@ -18,10 +20,23 @@ export function CartItem({ item }: CartItemProps) {
   return (
     <Card>
       <CardContent className="flex items-center gap-4 p-4">
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-muted">
-          <span className="text-2xl opacity-30">
-            {item.drone.category === "filming" ? "🎬" : "📦"}
-          </span>
+        <div className="h-16 w-16 shrink-0 overflow-hidden rounded-md bg-muted">
+          {!imageError ? (
+            <img
+              src={item.drone.image}
+              alt={item.drone.name}
+              className="h-full w-full object-cover"
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+              {item.drone.category === "filming" ? (
+                <Camera className="h-8 w-8 opacity-20" />
+              ) : (
+                <Package className="h-8 w-8 opacity-20" />
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex-1 min-w-0">
