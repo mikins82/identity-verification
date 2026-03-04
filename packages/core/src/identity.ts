@@ -1,5 +1,6 @@
 import type { IdentityData, VerificationInput, VerificationOptions } from "./types";
 import { VerificationError } from "./errors";
+import { findCountryByCode } from "./countries";
 import { validatePhone, normalizeToE164 } from "./validation/phone";
 import { validateAddress } from "./validation/address";
 import { generateVerificationScore } from "./scoring";
@@ -51,10 +52,16 @@ export async function getIdentityData(
   const score = generateVerificationScore(options.seed);
   const status: IdentityData["status"] = score >= 50 ? "verified" : "failed";
 
+  const country = findCountryByCode(input.countryCode);
+  const resolvedAddress = {
+    ...input.address,
+    country: country?.name ?? input.address.country,
+  };
+
   return {
     selfieUrl: input.selfie,
     phone: normalizeToE164(input.phone, input.countryCode),
-    address: input.address,
+    address: resolvedAddress,
     score,
     status,
   };
