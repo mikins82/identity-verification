@@ -289,4 +289,68 @@ describe("VerificationFlow", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("calls onComplete with verified result on success", async () => {
+    setupCameraMocks();
+
+    vi.spyOn(global.Math, "random").mockReturnValue(0.9);
+    const onComplete = vi.fn();
+
+    render(
+      <VerificationFlow
+        onComplete={onComplete}
+        verificationOptions={{ simulatedLatencyMs: 0 }}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Take photo")).toBeInTheDocument();
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText("Take photo"));
+    });
+    fireEvent.click(screen.getByText("Use this photo"));
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    });
+
+    fireEvent.change(screen.getByLabelText("Phone number"), {
+      target: { value: "4155552671" },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    });
+
+    fireEvent.change(screen.getByPlaceholderText("123 Main St"), {
+      target: { value: "123 Main St" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("City"), {
+      target: { value: "San Francisco" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("State"), {
+      target: { value: "CA" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Postal code"), {
+      target: { value: "94102" },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Verification Complete")).toBeInTheDocument();
+    });
+
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    expect(onComplete).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: "verified",
+        score: expect.any(Number),
+      }),
+    );
+  });
 });
