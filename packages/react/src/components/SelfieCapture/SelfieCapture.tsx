@@ -54,16 +54,18 @@ export function SelfieCapture({
       )}
 
       {state.status === "streaming" && (
-        <div className={styles.viewfinder}>
-          <video
-            ref={videoRef}
-            className={styles.video}
-            autoPlay
-            playsInline
-            muted
-            aria-label="Camera preview"
-          />
-          <FaceGuideOverlay shape={guideShape} />
+        <>
+          <div className={styles.viewfinder}>
+            <video
+              ref={videoRef}
+              className={styles.video}
+              autoPlay
+              playsInline
+              muted
+              aria-label="Camera preview"
+            />
+            <FaceGuideOverlay shape={guideShape} />
+          </div>
           <div className={styles.actions}>
             <button
               type="button"
@@ -74,7 +76,7 @@ export function SelfieCapture({
               <span className={styles.captureIcon} />
             </button>
           </div>
-        </div>
+        </>
       )}
 
       {state.status === "preview" && (

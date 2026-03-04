@@ -57,7 +57,7 @@ export function useCamera(options: UseCameraOptions = {}): UseCameraReturn {
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
+        video: { facingMode, width: { ideal: 720 }, height: { ideal: 1280 } },
       });
 
       if (!mountedRef.current) {
@@ -106,11 +106,13 @@ export function useCamera(options: UseCameraOptions = {}): UseCameraReturn {
     if (!video || state.status !== "streaming") return null;
 
     const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth || 1280;
-    canvas.height = video.videoHeight || 720;
+    canvas.width = video.videoWidth || 720;
+    canvas.height = video.videoHeight || 1280;
     const ctx = canvas.getContext("2d");
     if (!ctx) return null;
 
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0);
     const imageData = canvas.toDataURL("image/jpeg", imageQuality);
 
