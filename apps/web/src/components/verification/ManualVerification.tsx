@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, Fragment } from "react";
 import {
   Camera,
   Phone,
@@ -259,21 +259,21 @@ function SelfiePreview({
 
 function StepIndicator({ currentIndex }: { currentIndex: number }) {
   return (
-    <nav aria-label="Verification steps" className="flex items-center gap-2">
+    <nav aria-label="Verification steps" className="flex w-full items-center">
       {STEPS.map((s, i) => {
         const completed = i < currentIndex;
         const active = i === currentIndex;
         const Icon = s.icon;
 
         return (
-          <div key={s.key} className="flex items-center gap-2">
+          <Fragment key={s.key}>
             {i > 0 && (
               <div
-                className={`h-px w-8 sm:w-12 ${completed ? "bg-primary" : "bg-border"}`}
+                className={`h-0.5 flex-1 transition-colors ${i <= currentIndex ? "bg-primary" : "bg-border"}`}
               />
             )}
             <div
-              className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`flex shrink-0 items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
                 active
                   ? "bg-primary text-primary-foreground"
                   : completed
@@ -289,7 +289,7 @@ function StepIndicator({ currentIndex }: { currentIndex: number }) {
               )}
               <span className="hidden sm:inline">{s.label}</span>
             </div>
-          </div>
+          </Fragment>
         );
       })}
     </nav>
