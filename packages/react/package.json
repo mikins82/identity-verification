@@ -1,6 +1,14 @@
 {
   "name": "@identity-verification/react",
   "version": "0.1.0",
+  "description": "React components for identity verification — selfie capture, phone input, address form, and more",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/identity-verification/sdk.git",
+    "directory": "packages/react"
+  },
+  "keywords": ["identity", "verification", "kyc", "react", "components"],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -24,6 +32,9 @@
   },
   "dependencies": {
     "@identity-verification/core": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "dist"

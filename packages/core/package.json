@@ -1,6 +1,14 @@
 {
   "name": "@identity-verification/core",
   "version": "0.1.0",
+  "description": "Core identity verification SDK — types, validators, and utilities",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/identity-verification/sdk.git",
+    "directory": "packages/core"
+  },
+  "keywords": ["identity", "verification", "kyc", "validation"],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -10,6 +18,9 @@
       "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
       "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
     }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": ["dist"],
   "sideEffects": false,

@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { toast } from "sonner";
-import { Camera, Package, Clock, Navigation, Droplets, ShieldCheck } from "lucide-react";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Stepper } from "@/components/ui/stepper";
+import type { Drone } from "@/data/drones";
+import { isCargoDrone, isFilmingDrone } from "@/data/drones";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { useCartStore } from "@/store/cartStore";
-import type { Drone } from "@/data/drones";
-import { isFilmingDrone, isCargoDrone } from "@/data/drones";
+import { Camera, Clock, Droplets, Navigation, Package, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export interface DroneCardProps {
   drone: Drone;
@@ -28,7 +28,7 @@ export function DroneCard({ drone }: DroneCardProps) {
 
   return (
     <Card className="flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
-      <div className="relative aspect-[4/3] bg-muted">
+      <div className="relative aspect-4/3 bg-muted">
         <div className="flex h-full items-center justify-center text-muted-foreground">
           {drone.category === "filming" ? (
             <Camera className="h-16 w-16 opacity-20" />
@@ -59,10 +59,26 @@ export function DroneCard({ drone }: DroneCardProps) {
         <div className="grid grid-cols-2 gap-2 text-sm">
           {isFilmingDrone(drone) && (
             <>
-              <SpecItem icon={<Camera className="h-3.5 w-3.5" />} label="Resolution" value={drone.specs.resolution} />
-              <SpecItem icon={<ShieldCheck className="h-3.5 w-3.5" />} label="Stabilization" value={drone.specs.stabilization} />
-              <SpecItem icon={<Clock className="h-3.5 w-3.5" />} label="Flight time" value={`${drone.specs.flightTime} min`} />
-              <SpecItem icon={<Navigation className="h-3.5 w-3.5" />} label="Range" value={`${(drone.specs.range / 1000).toFixed(0)} km`} />
+              <SpecItem
+                icon={<Camera className="h-3.5 w-3.5" />}
+                label="Resolution"
+                value={drone.specs.resolution}
+              />
+              <SpecItem
+                icon={<ShieldCheck className="h-3.5 w-3.5" />}
+                label="Stabilization"
+                value={drone.specs.stabilization}
+              />
+              <SpecItem
+                icon={<Clock className="h-3.5 w-3.5" />}
+                label="Flight time"
+                value={`${drone.specs.flightTime} min`}
+              />
+              <SpecItem
+                icon={<Navigation className="h-3.5 w-3.5" />}
+                label="Range"
+                value={`${(drone.specs.range / 1000).toFixed(0)} km`}
+              />
             </>
           )}
           {isCargoDrone(drone) && (
@@ -71,9 +87,21 @@ export function DroneCard({ drone }: DroneCardProps) {
                 <span className="text-2xl font-bold">{drone.specs.maxPayload} kg</span>
                 <span className="block text-xs text-muted-foreground">max payload</span>
               </div>
-              <SpecItem icon={<Clock className="h-3.5 w-3.5" />} label="Flight time" value={`${drone.specs.flightTime} min`} />
-              <SpecItem icon={<Navigation className="h-3.5 w-3.5" />} label="Range" value={`${(drone.specs.range / 1000).toFixed(0)} km`} />
-              <SpecItem icon={<Droplets className="h-3.5 w-3.5" />} label="Weather" value={drone.specs.weatherResistance} />
+              <SpecItem
+                icon={<Clock className="h-3.5 w-3.5" />}
+                label="Flight time"
+                value={`${drone.specs.flightTime} min`}
+              />
+              <SpecItem
+                icon={<Navigation className="h-3.5 w-3.5" />}
+                label="Range"
+                value={`${(drone.specs.range / 1000).toFixed(0)} km`}
+              />
+              <SpecItem
+                icon={<Droplets className="h-3.5 w-3.5" />}
+                label="Weather"
+                value={drone.specs.weatherResistance}
+              />
             </>
           )}
         </div>
