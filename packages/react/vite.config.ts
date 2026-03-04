@@ -4,7 +4,10 @@ import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 
 export default defineConfig({
-  plugins: [react({ jsxRuntime: "automatic" }), dts({ rollupTypes: true })],
+  plugins: [
+    react({ jsxRuntime: "automatic" }),
+    dts({ rollupTypes: false, exclude: ["**/*.test.tsx", "**/*.test.ts", "**/test-setup.ts"] }),
+  ],
   css: {
     modules: {
       localsConvention: "camelCaseOnly",

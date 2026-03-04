@@ -1,0 +1,215 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--iv-font-family, system-ui, -apple-system, sans-serif);
+  width: 100%;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--iv-spacing-md, 16px);
+  min-height: 300px;
+  color: var(--iv-color-text-secondary, #6b7280);
+  font-size: 14px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--iv-color-border, #e5e7eb);
+  border-top-color: var(--iv-color-primary, #0066ff);
+  border-radius: 50%;
+  animation: iv-spin 0.8s linear infinite;
+}
+
+@keyframes iv-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.viewfinder {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  border-radius: var(--iv-border-radius, 8px);
+  overflow: hidden;
+  background: #000;
+}
+
+.video {
+  width: 100%;
+  display: block;
+  transform: scaleX(-1);
+}
+
+.actions {
+  position: absolute;
+  bottom: var(--iv-spacing-lg, 24px);
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.captureButton {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s;
+}
+
+.captureButton:hover {
+  transform: scale(1.05);
+}
+
+.captureButton:active {
+  transform: scale(0.95);
+}
+
+.captureButton:focus-visible {
+  outline: 2px solid var(--iv-color-primary, #0066ff);
+  outline-offset: 4px;
+}
+
+.captureIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  display: block;
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--iv-spacing-md, 16px);
+  width: 100%;
+  max-width: 480px;
+}
+
+.previewImage {
+  width: 100%;
+  border-radius: var(--iv-border-radius, 8px);
+  transform: scaleX(-1);
+}
+
+.previewActions {
+  display: flex;
+  gap: var(--iv-spacing-sm, 8px);
+  width: 100%;
+}
+
+.retakeButton,
+.acceptButton {
+  flex: 1;
+  padding: var(--iv-spacing-sm, 8px) var(--iv-spacing-md, 16px);
+  border-radius: var(--iv-border-radius, 8px);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: background-color 0.15s;
+}
+
+.retakeButton {
+  background: var(--iv-color-surface, #f9fafb);
+  color: var(--iv-color-text, #111827);
+  border: 1px solid var(--iv-color-border, #e5e7eb);
+}
+
+.retakeButton:hover {
+  background: var(--iv-color-border, #e5e7eb);
+}
+
+.acceptButton {
+  background: var(--iv-color-primary, #0066ff);
+  color: #fff;
+}
+
+.acceptButton:hover {
+  background: var(--iv-color-primary-hover, #0052cc);
+}
+
+.retakeButton:focus-visible,
+.acceptButton:focus-visible {
+  outline: 2px solid var(--iv-color-primary, #0066ff);
+  outline-offset: 2px;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--iv-spacing-sm, 8px);
+  padding: var(--iv-spacing-xl, 32px);
+  min-height: 300px;
+  justify-content: center;
+  text-align: center;
+}
+
+.errorTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--iv-color-error, #dc2626);
+  margin: 0;
+}
+
+.errorMessage {
+  font-size: 14px;
+  color: var(--iv-color-text-secondary, #6b7280);
+  margin: 0;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+.retryButton {
+  margin-top: var(--iv-spacing-sm, 8px);
+  padding: var(--iv-spacing-sm, 8px) var(--iv-spacing-lg, 24px);
+  border-radius: var(--iv-border-radius, 8px);
+  background: var(--iv-color-primary, #0066ff);
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.retryButton:hover {
+  background: var(--iv-color-primary-hover, #0052cc);
+}
+
+.retryButton:focus-visible {
+  outline: 2px solid var(--iv-color-primary, #0066ff);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+
+  .captureButton {
+    transition: none;
+  }
+
+  .retakeButton,
+  .acceptButton,
+  .retryButton {
+    transition: none;
+  }
+}

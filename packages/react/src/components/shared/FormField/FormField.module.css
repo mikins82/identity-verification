@@ -1,0 +1,33 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--iv-spacing-xs, 4px);
+}
+
+.label {
+  font-family: var(--iv-font-family, system-ui, -apple-system, sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--iv-color-text, #111827);
+  line-height: 1.4;
+}
+
+.required {
+  color: var(--iv-color-error, #dc2626);
+}
+
+.error {
+  font-family: var(--iv-font-family, system-ui, -apple-system, sans-serif);
+  font-size: 13px;
+  color: var(--iv-color-error, #dc2626);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.hint {
+  font-family: var(--iv-font-family, system-ui, -apple-system, sans-serif);
+  font-size: 13px;
+  color: var(--iv-color-text-secondary, #6b7280);
+  margin: 0;
+  line-height: 1.4;
+}

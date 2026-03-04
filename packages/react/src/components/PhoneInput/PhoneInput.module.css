@@ -1,0 +1,72 @@
+.container {
+  font-family: var(--iv-font-family, system-ui, -apple-system, sans-serif);
+  width: 100%;
+}
+
+.inputGroup {
+  display: flex;
+}
+
+.countryDropdown {
+  flex-shrink: 0;
+}
+
+.countryDropdown > button {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+  height: 100%;
+}
+
+.input {
+  flex: 1;
+  padding: var(--iv-spacing-sm, 8px) var(--iv-spacing-md, 16px);
+  border: 1px solid var(--iv-color-border, #e5e7eb);
+  border-radius: 0 var(--iv-border-radius, 8px) var(--iv-border-radius, 8px) 0;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--iv-color-text, #111827);
+  outline: none;
+  min-width: 0;
+}
+
+.input:focus {
+  border-color: var(--iv-color-primary, #0066ff);
+  box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.15);
+}
+
+.input::placeholder {
+  color: var(--iv-color-text-secondary, #6b7280);
+}
+
+.countryOption {
+  display: flex;
+  align-items: center;
+  gap: var(--iv-spacing-sm, 8px);
+  width: 100%;
+}
+
+.flag {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.countryName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dialCode {
+  color: var(--iv-color-text-secondary, #6b7280);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.selectedCountry {
+  display: flex;
+  align-items: center;
+  gap: var(--iv-spacing-xs, 4px);
+}

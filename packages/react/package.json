@@ -7,10 +7,16 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/react.css"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
@@ -19,8 +25,12 @@
   "dependencies": {
     "@identity-verification/core": "workspace:*"
   },
-  "files": ["dist"],
-  "sideEffects": ["*.css"],
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
@@ -30,14 +40,16 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4",
-    "vite": "^6",
-    "vite-plugin-dts": "^4",
-    "vitest": "^3",
-    "@testing-library/react": "^16",
     "@testing-library/jest-dom": "^6",
+    "@testing-library/react": "^16",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4",
     "jsdom": "^26",
     "react": "^19",
-    "react-dom": "^19"
+    "react-dom": "^19",
+    "vite": "^6",
+    "vite-plugin-dts": "^4",
+    "vitest": "^3"
   }
 }
