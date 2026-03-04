@@ -16,6 +16,7 @@ export interface DroneCardProps {
 
 export function DroneCard({ drone }: DroneCardProps) {
   const [days, setDays] = useState(1);
+  const [imageError, setImageError] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
 
   const handleAdd = () => {
@@ -28,14 +29,24 @@ export function DroneCard({ drone }: DroneCardProps) {
 
   return (
     <Card className="flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
-      <div className="relative aspect-4/3 bg-muted">
-        <div className="flex h-full items-center justify-center text-muted-foreground">
-          {drone.category === "filming" ? (
-            <Camera className="h-16 w-16 opacity-20" />
-          ) : (
-            <Package className="h-16 w-16 opacity-20" />
-          )}
-        </div>
+      <div className="relative aspect-4/3 bg-muted overflow-hidden">
+        {!imageError ? (
+          <img
+            src={drone.image}
+            alt={drone.name}
+            className="h-full w-full object-cover"
+            onError={() => setImageError(true)}
+          />
+        ) : null}
+        {imageError ? (
+          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground bg-muted">
+            {drone.category === "filming" ? (
+              <Camera className="h-16 w-16 opacity-20" />
+            ) : (
+              <Package className="h-16 w-16 opacity-20" />
+            )}
+          </div>
+        ) : null}
         <Badge
           variant={drone.category === "filming" ? "default" : "secondary"}
           className="absolute left-3 top-3"

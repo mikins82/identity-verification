@@ -36,7 +36,7 @@ export const DRONES: Drone[] = [
     name: "Phantom Pro X",
     category: "filming",
     dailyPrice: 89,
-    image: "/drones/phantom-pro.svg",
+    image: "/drones/phantom-pro.jpg",
     description: "Professional 4K aerial cinematography with 3-axis stabilization and obstacle avoidance.",
     specs: {
       resolution: "4K 60fps",
@@ -50,7 +50,7 @@ export const DRONES: Drone[] = [
     name: "Mavic Ultra",
     category: "filming",
     dailyPrice: 129,
-    image: "/drones/mavic-ultra.svg",
+    image: "/drones/mavic-ultra.jpg",
     description: "Compact foldable drone with 8K video, Hasselblad camera, and ActiveTrack 5.0.",
     specs: {
       resolution: "8K 30fps",
@@ -64,7 +64,7 @@ export const DRONES: Drone[] = [
     name: "Inspire Cinema",
     category: "filming",
     dailyPrice: 149,
-    image: "/drones/inspire-cinema.svg",
+    image: "/drones/inspire-cinema.jpg",
     description: "Cinema-grade aerial platform with interchangeable lens system and RAW recording.",
     specs: {
       resolution: "6K RAW",
@@ -78,7 +78,7 @@ export const DRONES: Drone[] = [
     name: "SkyMule Lite",
     category: "cargo",
     dailyPrice: 99,
-    image: "/drones/cargo-lite.svg",
+    image: "/drones/cargo-lite.jpg",
     description: "Lightweight delivery drone for small packages up to 2kg with precision landing.",
     specs: {
       maxPayload: 2,
@@ -92,7 +92,7 @@ export const DRONES: Drone[] = [
     name: "SkyMule Heavy",
     category: "cargo",
     dailyPrice: 169,
-    image: "/drones/cargo-heavy.svg",
+    image: "/drones/cargo-heavy.jpg",
     description: "Heavy-lift cargo drone for industrial deliveries up to 10kg with all-weather capability.",
     specs: {
       maxPayload: 10,
@@ -106,7 +106,7 @@ export const DRONES: Drone[] = [
     name: "SkyMule Max",
     category: "cargo",
     dailyPrice: 199,
-    image: "/drones/cargo-max.svg",
+    image: "/drones/cargo-max.jpg",
     description: "Maximum payload capacity for heavy-duty logistics. Autonomous route planning included.",
     specs: {
       maxPayload: 20,
