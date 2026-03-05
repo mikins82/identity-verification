@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Loader2, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { RouteGuardPending } from "@/components/ui/route-guard-pending";
 import { CheckoutSummary } from "@/components/checkout/CheckoutSummary";
 import { useRouteGuard } from "@/hooks/useRouteGuard";
 
@@ -16,7 +17,7 @@ export default function CheckoutPage() {
     navigate("/checkout/confirmation");
   };
 
-  if (!allowed) return null;
+  if (!allowed) return <RouteGuardPending />;
 
   return (
     <div className="mx-auto max-w-2xl">

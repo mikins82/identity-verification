@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { useNavigate } from "react-router";
 import { ManualVerification } from "@/components/verification/ManualVerification";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { RouteGuardPending } from "@/components/ui/route-guard-pending";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouteGuard } from "@/hooks/useRouteGuard";
 import { useVerificationStore } from "@/store/verificationStore";
@@ -32,7 +33,7 @@ export default function VerifyPage() {
   const navigate = useNavigate();
   const setIdentityData = useVerificationStore((s) => s.setIdentityData);
 
-  if (!allowed) return null;
+  if (!allowed) return <RouteGuardPending />;
 
   const handleComplete = (data: IdentityData) => {
     setIdentityData(data);

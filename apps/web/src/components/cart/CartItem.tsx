@@ -1,3 +1,4 @@
+import { announce } from "@/lib/announcer";
 import { Camera, Package, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -51,7 +52,12 @@ export function CartItem({ item }: CartItemProps) {
             <span className="text-xs text-muted-foreground">Days:</span>
             <Stepper
               value={item.days}
-              onChange={(days) => updateDays(item.drone.id, days)}
+              onChange={(days) => {
+                updateDays(item.drone.id, days);
+                announce(
+                  `${item.drone.name} rental updated to ${days} day${days !== 1 ? "s" : ""}`,
+                );
+              }}
               min={1}
               max={30}
             />
@@ -65,7 +71,10 @@ export function CartItem({ item }: CartItemProps) {
             variant="ghost"
             size="icon"
             className="shrink-0 text-muted-foreground hover:text-destructive"
-            onClick={() => removeItem(item.drone.id)}
+            onClick={() => {
+              removeItem(item.drone.id);
+              announce(`${item.drone.name} removed from cart`);
+            }}
             aria-label={`Remove ${item.drone.name}`}
           >
             <Trash2 className="h-4 w-4" />

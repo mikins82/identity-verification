@@ -1,4 +1,4 @@
-import { useState, useCallback, Fragment } from "react";
+import { useState, useCallback, useEffect, useRef, Fragment } from "react";
 import {
   Camera,
   Phone,
@@ -25,6 +25,7 @@ import {
   type Address,
   type IdentityData,
 } from "@identity-verification/core";
+import { announce } from "@/lib/announcer";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -78,6 +79,17 @@ export function ManualVerification({
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const currentIndex = STEPS.findIndex((s) => s.key === step);
+  const isInitialMount = useRef(true);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    announce(
+      `Step ${currentIndex + 1} of ${STEPS.length}: ${STEPS[currentIndex].label}`,
+    );
+  }, [step, currentIndex]);
 
   const canAdvance = (): boolean => {
     switch (step) {

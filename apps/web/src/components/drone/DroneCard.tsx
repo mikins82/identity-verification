@@ -7,6 +7,7 @@ import type { Drone } from "@/data/drones";
 import { isCargoDrone, isFilmingDrone } from "@/data/drones";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { useCartStore } from "@/store/cartStore";
+import { announce } from "@/lib/announcer";
 import { Camera, Clock, Droplets, Navigation, Package, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -22,9 +23,11 @@ export function DroneCard({ drone }: DroneCardProps) {
 
   const handleAdd = () => {
     addItem(drone, days);
+    const msg = `${drone.name} added to cart for ${days} day${days > 1 ? "s" : ""}`;
     toast.success(`${drone.name} added to cart`, {
       description: `${days} day${days > 1 ? "s" : ""} rental`,
     });
+    announce(msg);
     setDays(1);
   };
 

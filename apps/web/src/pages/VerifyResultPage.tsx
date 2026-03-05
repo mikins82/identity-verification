@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { ArrowRight, RotateCcw, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { RouteGuardPending } from "@/components/ui/route-guard-pending";
 import { ResultCard } from "@/components/verification/ResultCard";
 import { useRouteGuard } from "@/hooks/useRouteGuard";
 import { useVerificationStore } from "@/store/verificationStore";
@@ -11,7 +12,7 @@ export default function VerifyResultPage() {
   const identityData = useVerificationStore((s) => s.identityData);
   const reset = useVerificationStore((s) => s.reset);
 
-  if (!allowed) return null;
+  if (!allowed) return <RouteGuardPending />;
 
   if (!identityData) {
     navigate("/verify", { replace: true, state: { fromCart: true } });
