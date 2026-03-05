@@ -68,7 +68,7 @@ identity-verification-sdk/
 ### Install & Run
 
 ```bash
-pnpm setup            # Install deps, build all packages, then start dev (one command)
+pnpm bootstrap        # Install deps, build all packages, then start dev (one command)
 # or step by step:
 pnpm install
 pnpm build            # One-time build so downstream packages have type declarations
