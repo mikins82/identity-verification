@@ -65,7 +65,7 @@ describe("useRouteGuard", () => {
     });
 
     it("allows access when cart has items", () => {
-      useCartStore.getState().addItem(filmingDrone);
+      useCartStore.getState().addItem(filmingDrone, "2026-04-01", "2026-04-02");
 
       const { result } = renderHook(() =>
         useRouteGuard({ requireCart: true }),
@@ -78,7 +78,7 @@ describe("useRouteGuard", () => {
 
   describe("requireCartNavigation", () => {
     it("redirects to / when location.state.fromCart is missing", () => {
-      useCartStore.getState().addItem(filmingDrone);
+      useCartStore.getState().addItem(filmingDrone, "2026-04-01", "2026-04-02");
       mockLocationState = {};
 
       const { result } = renderHook(() =>
@@ -90,7 +90,7 @@ describe("useRouteGuard", () => {
     });
 
     it("allows access when fromCart flag is present", () => {
-      useCartStore.getState().addItem(filmingDrone);
+      useCartStore.getState().addItem(filmingDrone, "2026-04-01", "2026-04-02");
       mockLocationState = { fromCart: true };
 
       const { result } = renderHook(() =>
@@ -103,7 +103,7 @@ describe("useRouteGuard", () => {
     });
 
     it("consumes fromCart from history state so it does not survive a reload", () => {
-      useCartStore.getState().addItem(filmingDrone);
+      useCartStore.getState().addItem(filmingDrone, "2026-04-01", "2026-04-02");
       mockLocationState = { fromCart: true };
 
       renderHook(() => useRouteGuard({ requireCartNavigation: true }));
@@ -115,7 +115,7 @@ describe("useRouteGuard", () => {
     });
 
     it("preserves other state keys when consuming fromCart", () => {
-      useCartStore.getState().addItem(filmingDrone);
+      useCartStore.getState().addItem(filmingDrone, "2026-04-01", "2026-04-02");
       mockLocationState = { fromCart: true, verifyPath: "/verify" };
 
       renderHook(() => useRouteGuard({ requireCartNavigation: true }));
@@ -129,7 +129,7 @@ describe("useRouteGuard", () => {
 
   describe("requireVerified", () => {
     it("redirects to /verify when user is not verified", () => {
-      useCartStore.getState().addItem(filmingDrone);
+      useCartStore.getState().addItem(filmingDrone, "2026-04-01", "2026-04-02");
 
       const { result } = renderHook(() =>
         useRouteGuard({ requireVerified: true }),
@@ -143,7 +143,7 @@ describe("useRouteGuard", () => {
     });
 
     it("allows access when user is verified", () => {
-      useCartStore.getState().addItem(filmingDrone);
+      useCartStore.getState().addItem(filmingDrone, "2026-04-01", "2026-04-02");
       useVerificationStore.getState().setIdentityData(verifiedIdentity);
 
       const { result } = renderHook(() =>
@@ -166,7 +166,7 @@ describe("useRouteGuard", () => {
     });
 
     it("requireCartNavigation takes priority over requireVerified when cart is non-empty", () => {
-      useCartStore.getState().addItem(filmingDrone);
+      useCartStore.getState().addItem(filmingDrone, "2026-04-01", "2026-04-02");
       mockLocationState = {};
 
       const { result } = renderHook(() =>
@@ -181,7 +181,7 @@ describe("useRouteGuard", () => {
     });
 
     it("passes all guards when all conditions are met", () => {
-      useCartStore.getState().addItem(filmingDrone);
+      useCartStore.getState().addItem(filmingDrone, "2026-04-01", "2026-04-02");
       useVerificationStore.getState().setIdentityData(verifiedIdentity);
       mockLocationState = { fromCart: true };
 

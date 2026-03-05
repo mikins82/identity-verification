@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { calcDays, formatDateRange } from "@/lib/dateUtils";
 import type { CartItem } from "@/store/cartStore";
 
 export interface ConfirmationScreenProps {
@@ -56,11 +57,11 @@ export function ConfirmationScreen({
                 <span>
                   {item.drone.name}{" "}
                   <span className="text-muted-foreground">
-                    ({item.days} day{item.days !== 1 ? "s" : ""})
+                    {formatDateRange(item.startDate, item.endDate)} ({calcDays(item.startDate, item.endDate)} day{calcDays(item.startDate, item.endDate) !== 1 ? "s" : ""})
                   </span>
                 </span>
                 <span className="tabular-nums">
-                  {formatCurrency(item.drone.dailyPrice * item.days)}
+                  {formatCurrency(item.drone.dailyPrice * calcDays(item.startDate, item.endDate))}
                 </span>
               </div>
             ))}

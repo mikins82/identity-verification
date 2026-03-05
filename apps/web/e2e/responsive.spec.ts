@@ -1,4 +1,4 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 const MOBILE_VIEWPORT = { width: 375, height: 812 };
 const TABLET_VIEWPORT = { width: 768, height: 1024 };
@@ -12,24 +12,23 @@ test.describe("Responsive: Mobile (375px)", () => {
       page.getByRole("heading", { name: /Drone Catalog/i }),
     ).toBeVisible();
 
-    const addButtons = page.getByRole("button", { name: "Add to Cart" });
-    await expect(addButtons.first()).toBeVisible();
+    const cards = page.locator("[data-testid='drone-card']");
+    await expect(cards.first()).toBeVisible();
   });
 
   test("cart page is usable at mobile width", async ({ page }) => {
     await page.goto("/");
 
-    const firstAddButton = page
-      .getByRole("button", { name: "Add to Cart" })
-      .first();
-    await firstAddButton.click();
+    const firstCard = page.locator("[data-testid='drone-card']").first();
+    await firstCard.click();
+
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole("button", { name: "Add to Cart" }).click();
     await page.getByText(/added to cart/i).first().waitFor();
 
     await page.locator('a[href="/cart"]').click();
     await expect(page.getByText(/Order Summary/i)).toBeVisible();
-
-    const increaseBtn = page.getByLabel("Increase quantity");
-    await expect(increaseBtn).toBeVisible();
   });
 
 });
@@ -45,8 +44,8 @@ test.describe("Responsive: Tablet (768px)", () => {
       page.getByRole("heading", { name: /Drone Catalog/i }),
     ).toBeVisible();
 
-    const addButtons = page.getByRole("button", { name: "Add to Cart" });
-    await expect(addButtons).toHaveCount(6);
+    const cards = page.locator("[data-testid='drone-card']");
+    await expect(cards).toHaveCount(6);
   });
 
 });

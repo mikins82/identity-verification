@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router";
 import { Loader2 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { CatalogPage } from "@/pages/CatalogPage";
+import { DroneDetailModal } from "@/components/drone/DroneDetailModal";
 
 const CartPage = lazy(() => import("@/pages/CartPage"));
 const VerifyPage = lazy(() => import("@/pages/VerifyPage"));
@@ -28,7 +29,13 @@ export const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
-      { index: true, element: <CatalogPage /> },
+      {
+        element: <CatalogPage />,
+        children: [
+          { index: true },
+          { path: "drone/:droneId", element: <DroneDetailModal /> },
+        ],
+      },
       { path: "cart", element: <Lazy><CartPage /></Lazy> },
       { path: "verify", element: <Lazy><VerifyPage /></Lazy> },
       { path: "verify/auto", element: <Lazy><VerifyAutoPage /></Lazy> },

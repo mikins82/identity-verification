@@ -1,3 +1,4 @@
+import { Outlet } from "react-router";
 import { CategoryTabs } from "@/components/drone/CategoryTabs";
 
 export function CatalogPage() {
@@ -10,6 +11,7 @@ export function CatalogPage() {
         </p>
       </div>
       <CategoryTabs />
+      <Outlet />
     </div>
   );
 }

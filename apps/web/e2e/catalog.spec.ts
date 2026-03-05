@@ -15,53 +15,66 @@ test.describe("Catalog Page", () => {
   });
 
   test("shows 6 drone cards initially (all tab)", async ({ page }) => {
-    const addButtons = page.getByRole("button", { name: "Add to Cart" });
-    await expect(addButtons).toHaveCount(6);
+    const cards = page.locator("[data-testid='drone-card']");
+    await expect(cards).toHaveCount(6);
   });
 
   test("category tabs filter drones correctly", async ({ page }) => {
     await page.getByRole("tab", { name: /Filming/i }).click();
-    let addButtons = page.getByRole("button", { name: "Add to Cart" });
-    await expect(addButtons).toHaveCount(3);
+    let cards = page.locator("[data-testid='drone-card']");
+    await expect(cards).toHaveCount(3);
 
     await page.getByRole("tab", { name: /Cargo/i }).click();
-    addButtons = page.getByRole("button", { name: "Add to Cart" });
-    await expect(addButtons).toHaveCount(3);
+    cards = page.locator("[data-testid='drone-card']");
+    await expect(cards).toHaveCount(3);
 
     await page.getByRole("tab", { name: /All/i }).click();
-    addButtons = page.getByRole("button", { name: "Add to Cart" });
-    await expect(addButtons).toHaveCount(6);
+    cards = page.locator("[data-testid='drone-card']");
+    await expect(cards).toHaveCount(6);
   });
 
-  test("day stepper increments and decrements", async ({ page }) => {
+  test("clicking a drone card opens the detail modal", async ({ page }) => {
     const firstCard = page.locator("[data-testid='drone-card']").first();
+    await firstCard.click();
 
-    const increaseBtn = firstCard.getByLabel("Increase quantity");
-    await increaseBtn.click();
-    await increaseBtn.click();
-
-    const decreaseBtn = firstCard.getByLabel("Decrease quantity");
-    await decreaseBtn.click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Add to Cart" })).toBeVisible();
   });
 
-  test("add to cart shows toast notification and updates cart badge", async ({
-    page,
-  }) => {
-    const firstAddButton = page
-      .getByRole("button", { name: "Add to Cart" })
-      .first();
-    await firstAddButton.click();
+  test("detail modal shows date picker and add to cart", async ({ page }) => {
+    const firstCard = page.locator("[data-testid='drone-card']").first();
+    await firstCard.click();
 
-    await expect(page.getByText(/added to cart/i).first()).toBeVisible();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+
+    await expect(dialog.locator("input[type='date']")).toHaveCount(2);
+    await expect(dialog.getByText(/day.*rental/i)).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "Add to Cart" })).toBeVisible();
   });
 
-  test("adding multiple drones to cart", async ({ page }) => {
-    const addButtons = page.getByRole("button", { name: "Add to Cart" });
+  test("add to cart from modal shows toast and closes modal", async ({ page }) => {
+    const firstCard = page.locator("[data-testid='drone-card']").first();
+    await firstCard.click();
 
-    await addButtons.nth(0).click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+
+    await dialog.getByRole("button", { name: "Add to Cart" }).click();
+
+    await expect(page.getByText(/added to cart/i).first()).toBeVisible();
+    await expect(dialog).not.toBeVisible();
+  });
+
+  test("adding multiple drones to cart via modal", async ({ page }) => {
+    const cards = page.locator("[data-testid='drone-card']");
+
+    await cards.nth(0).click();
+    await page.getByRole("dialog").getByRole("button", { name: "Add to Cart" }).click();
     await expect(page.getByText(/added to cart/i).first()).toBeVisible();
 
-    await addButtons.nth(1).click();
+    await cards.nth(1).click();
+    await page.getByRole("dialog").getByRole("button", { name: "Add to Cart" }).click();
 
     await page.locator('a[href="/cart"]').click();
     await expect(page.getByText(/Order Summary/i)).toBeVisible();

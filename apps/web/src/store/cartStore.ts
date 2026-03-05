@@ -1,10 +1,12 @@
 import type { Drone } from "@/data/drones";
+import { calcDays } from "@/lib/dateUtils";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface CartItem {
   drone: Drone;
-  days: number;
+  startDate: string;
+  endDate: string;
 }
 
 export interface CompletedOrder {
@@ -19,12 +21,16 @@ function generateOrderId(): string {
   return `SR-${timestamp}-${random}`;
 }
 
+function itemTotal(item: CartItem): number {
+  return item.drone.dailyPrice * calcDays(item.startDate, item.endDate);
+}
+
 interface CartState {
   items: CartItem[];
   completedOrder: CompletedOrder | null;
-  addItem: (drone: Drone, days?: number) => void;
+  addItem: (drone: Drone, startDate: string, endDate: string) => void;
   removeItem: (droneId: string) => void;
-  updateDays: (droneId: string, days: number) => void;
+  updateDates: (droneId: string, startDate: string, endDate: string) => void;
   clear: () => void;
   completeOrder: () => void;
   clearCompletedOrder: () => void;
@@ -33,26 +39,26 @@ interface CartState {
 export const useCartStore = create<CartState>()(persist((set) => ({
   items: [],
   completedOrder: null,
-  addItem: (drone, days = 1) =>
+  addItem: (drone, startDate, endDate) =>
     set((state) => {
       const existing = state.items.find((i) => i.drone.id === drone.id);
       if (existing) {
         return {
           items: state.items.map((i) =>
-            i.drone.id === drone.id ? { ...i, days: i.days + days } : i,
+            i.drone.id === drone.id ? { ...i, startDate, endDate } : i,
           ),
         };
       }
-      return { items: [...state.items, { drone, days }] };
+      return { items: [...state.items, { drone, startDate, endDate }] };
     }),
   removeItem: (droneId) =>
     set((state) => ({
       items: state.items.filter((i) => i.drone.id !== droneId),
     })),
-  updateDays: (droneId, days) =>
+  updateDates: (droneId, startDate, endDate) =>
     set((state) => ({
       items: state.items.map((i) =>
-        i.drone.id === droneId ? { ...i, days: Math.max(1, days) } : i,
+        i.drone.id === droneId ? { ...i, startDate, endDate } : i,
       ),
     })),
   clear: () => set({ items: [] }),
@@ -61,10 +67,7 @@ export const useCartStore = create<CartState>()(persist((set) => ({
       completedOrder: {
         orderId: generateOrderId(),
         items: state.items,
-        totalPrice: state.items.reduce(
-          (sum, i) => sum + i.drone.dailyPrice * i.days,
-          0,
-        ),
+        totalPrice: state.items.reduce((sum, i) => sum + itemTotal(i), 0),
       },
       items: [],
     })),
@@ -75,7 +78,7 @@ export const useCartStore = create<CartState>()(persist((set) => ({
 }));
 
 export function selectTotalPrice(state: CartState): number {
-  return state.items.reduce((sum, i) => sum + i.drone.dailyPrice * i.days, 0);
+  return state.items.reduce((sum, i) => sum + itemTotal(i), 0);
 }
 
 export function selectItemCount(state: CartState): number {

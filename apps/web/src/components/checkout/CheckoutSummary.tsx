@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { calcDays, formatDateRange } from "@/lib/dateUtils";
 import { useCartStore, selectTotalPrice } from "@/store/cartStore";
 import { useVerificationStore } from "@/store/verificationStore";
 
@@ -24,7 +25,8 @@ export function CheckoutSummary() {
         <CardContent>
           <div className="space-y-3">
             {items.map((item) => {
-              const subtotal = item.drone.dailyPrice * item.days;
+              const days = calcDays(item.startDate, item.endDate);
+              const subtotal = item.drone.dailyPrice * days;
               return (
                 <div
                   key={item.drone.id}
@@ -33,7 +35,7 @@ export function CheckoutSummary() {
                   <div className="min-w-0 flex-1">
                     <span className="font-medium">{item.drone.name}</span>
                     <span className="ml-2 text-muted-foreground">
-                      {item.days} day{item.days !== 1 ? "s" : ""} &times;{" "}
+                      {formatDateRange(item.startDate, item.endDate)} ({days} day{days !== 1 ? "s" : ""}) &times;{" "}
                       {formatCurrency(item.drone.dailyPrice)}/day
                     </span>
                   </div>
