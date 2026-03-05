@@ -9,14 +9,14 @@ import { formatCurrency } from "@/lib/formatCurrency";
 import { useCartStore } from "@/store/cartStore";
 import { announce } from "@/lib/announcer";
 import { Camera, Clock, Droplets, Navigation, Package, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { toast } from "sonner";
 
 export interface DroneCardProps {
   drone: Drone;
 }
 
-export function DroneCard({ drone }: DroneCardProps) {
+export const DroneCard = memo(function DroneCard({ drone }: DroneCardProps) {
   const [days, setDays] = useState(1);
   const [imageError, setImageError] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
@@ -133,7 +133,7 @@ export function DroneCard({ drone }: DroneCardProps) {
       </CardFooter>
     </Card>
   );
-}
+});
 
 function SpecItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (

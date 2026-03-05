@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Stepper } from "@/components/ui/stepper";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { useCartStore, type CartItem as CartItemType } from "@/store/cartStore";
-import { useState } from "react";
+import { memo, useState } from "react";
 
 export interface CartItemProps {
   item: CartItemType;
 }
 
-export function CartItem({ item }: CartItemProps) {
+export const CartItem = memo(function CartItem({ item }: CartItemProps) {
   const [imageError, setImageError] = useState(false);
   const updateDays = useCartStore((s) => s.updateDays);
   const removeItem = useCartStore((s) => s.removeItem);
@@ -83,4 +83,4 @@ export function CartItem({ item }: CartItemProps) {
       </CardContent>
     </Card>
   );
-}
+});
