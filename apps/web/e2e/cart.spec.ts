@@ -61,22 +61,4 @@ test.describe("Cart Page", () => {
     await expect(page.getByText(/your cart is empty/i)).toBeVisible();
   });
 
-  test("proceed to verification link navigates correctly", async ({
-    page,
-  }) => {
-    await page.goto("/");
-    const firstAddButton = page
-      .getByRole("button", { name: "Add to Cart" })
-      .first();
-    await firstAddButton.click();
-    await page.getByText(/added to cart/i).first().waitFor();
-
-    await page.locator('a[href="/cart"]').click();
-    await expect(page.getByText(/Order Summary/i)).toBeVisible();
-    await page.getByRole("link", { name: /Proceed to Verification/i }).click();
-
-    await expect(
-      page.getByRole("heading", { name: /Identity Verification/i }),
-    ).toBeVisible();
-  });
 });

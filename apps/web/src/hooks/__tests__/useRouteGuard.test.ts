@@ -13,6 +13,7 @@ vi.mock("react-router", () => ({
   useLocation: () => ({
     state: mockLocationState,
     pathname: "/checkout",
+    search: "",
   }),
 }));
 
@@ -76,7 +77,7 @@ describe("useRouteGuard", () => {
   });
 
   describe("requireCartNavigation", () => {
-    it("redirects to /cart when location.state.fromCart is missing", () => {
+    it("redirects to / when location.state.fromCart is missing", () => {
       useCartStore.getState().addItem(filmingDrone);
       mockLocationState = {};
 
@@ -85,7 +86,7 @@ describe("useRouteGuard", () => {
       );
 
       expect(result.current).toBe(false);
-      expect(mockNavigate).toHaveBeenCalledWith("/cart", { replace: true });
+      expect(mockNavigate).toHaveBeenCalledWith("/", { replace: true });
     });
 
     it("allows access when fromCart flag is present", () => {
@@ -97,7 +98,32 @@ describe("useRouteGuard", () => {
       );
 
       expect(result.current).toBe(true);
-      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalledWith("/", expect.anything());
+      expect(mockNavigate).not.toHaveBeenCalledWith("/cart", expect.anything());
+    });
+
+    it("consumes fromCart from history state so it does not survive a reload", () => {
+      useCartStore.getState().addItem(filmingDrone);
+      mockLocationState = { fromCart: true };
+
+      renderHook(() => useRouteGuard({ requireCartNavigation: true }));
+
+      expect(mockNavigate).toHaveBeenCalledWith("/checkout", {
+        replace: true,
+        state: undefined,
+      });
+    });
+
+    it("preserves other state keys when consuming fromCart", () => {
+      useCartStore.getState().addItem(filmingDrone);
+      mockLocationState = { fromCart: true, verifyPath: "/verify" };
+
+      renderHook(() => useRouteGuard({ requireCartNavigation: true }));
+
+      expect(mockNavigate).toHaveBeenCalledWith("/checkout", {
+        replace: true,
+        state: { verifyPath: "/verify" },
+      });
     });
   });
 
@@ -151,7 +177,7 @@ describe("useRouteGuard", () => {
       );
 
       expect(result.current).toBe(false);
-      expect(mockNavigate).toHaveBeenCalledWith("/cart", { replace: true });
+      expect(mockNavigate).toHaveBeenCalledWith("/", { replace: true });
     });
 
     it("passes all guards when all conditions are met", () => {
@@ -168,7 +194,9 @@ describe("useRouteGuard", () => {
       );
 
       expect(result.current).toBe(true);
-      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalledWith("/", expect.anything());
+      expect(mockNavigate).not.toHaveBeenCalledWith("/cart", expect.anything());
+      expect(mockNavigate).not.toHaveBeenCalledWith("/verify", expect.anything());
     });
   });
 

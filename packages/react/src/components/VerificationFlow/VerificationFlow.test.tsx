@@ -148,6 +148,29 @@ describe("VerificationFlow", () => {
     });
   });
 
+  it("fires onDirtyChange when user enters data", async () => {
+    setupCameraMocks();
+    const onDirtyChange = vi.fn();
+    render(
+      <VerificationFlow onComplete={vi.fn()} onDirtyChange={onDirtyChange} />,
+    );
+
+    expect(onDirtyChange).toHaveBeenCalledWith(false);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Take photo")).toBeInTheDocument();
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText("Take photo"));
+    });
+    fireEvent.click(screen.getByText("Use this photo"));
+
+    await waitFor(() => {
+      expect(onDirtyChange).toHaveBeenCalledWith(true);
+    });
+  });
+
   it("fires onStepChange callback on step transitions", async () => {
     setupCameraMocks();
     const onStepChange = vi.fn();

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useBlocker } from "react-router";
 
 /**
@@ -8,8 +8,16 @@ import { useBlocker } from "react-router";
  *   (the only mechanism the browser allows — custom UI is not possible here).
  * - **In-app SPA navigation**: returns a React Router `blocker` so the caller
  *   can render a custom confirmation dialog.
+ *
+ * Call `allowNavigation()` before a programmatic navigate to bypass the blocker
+ * (e.g. after a successful form submission).
  */
 export function useUnsavedChanges(dirty: boolean) {
+  const dirtyRef = useRef(dirty);
+  dirtyRef.current = dirty;
+
+  const bypassRef = useRef(false);
+
   useEffect(() => {
     if (!dirty) return;
 
@@ -21,7 +29,16 @@ export function useUnsavedChanges(dirty: boolean) {
     return () => window.removeEventListener("beforeunload", handler);
   }, [dirty]);
 
-  const blocker = useBlocker(dirty);
+  const shouldBlock = useCallback(
+    () => dirtyRef.current && !bypassRef.current,
+    [],
+  );
 
-  return blocker;
+  const blocker = useBlocker(shouldBlock);
+
+  const allowNavigation = useCallback(() => {
+    bypassRef.current = true;
+  }, []);
+
+  return { blocker, allowNavigation };
 }

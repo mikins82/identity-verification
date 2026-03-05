@@ -94,7 +94,7 @@ export function ManualVerification({
     phone.length > 0 ||
     address.street.length > 0 ||
     address.city.length > 0;
-  const blocker = useUnsavedChanges(hasUnsavedData);
+  const { blocker, allowNavigation } = useUnsavedChanges(hasUnsavedData);
 
   const currentIndex = STEPS.findIndex((s) => s.key === step);
   const isInitialMount = useRef(true);
@@ -159,6 +159,7 @@ export function ManualVerification({
         "[getIdentityData] result:\n",
         JSON.stringify(result, null, 2),
       );
+      allowNavigation();
       onComplete(result);
     } catch (err) {
       const message =

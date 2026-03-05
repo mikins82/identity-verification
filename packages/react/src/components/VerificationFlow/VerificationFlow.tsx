@@ -21,6 +21,7 @@ export interface VerificationFlowProps {
   onComplete: (result: IdentityData) => void;
   onResult?: (result: IdentityData) => void;
   onStepChange?: (step: VerificationStep) => void;
+  onDirtyChange?: (dirty: boolean) => void;
   onError?: (error: VerificationError | Error) => void;
   verificationOptions?: VerificationOptions;
   className?: string;
@@ -36,6 +37,7 @@ export function VerificationFlow({
   onComplete,
   onResult,
   onStepChange,
+  onDirtyChange,
   onError,
   verificationOptions,
   className,
@@ -59,6 +61,18 @@ export function VerificationFlow({
   const stableOnResult = useCallbackRef(onResult ?? (() => {}));
   const stableOnError = useCallbackRef(onError ?? (() => {}));
   const stableOnStepChange = useCallbackRef(onStepChange ?? (() => {}));
+  const stableOnDirtyChange = useCallbackRef(onDirtyChange ?? (() => {}));
+
+  const isDirty = !!(
+    state.selfie ||
+    state.phone ||
+    (state.address as Record<string, unknown>)?.street ||
+    (state.address as Record<string, unknown>)?.city
+  );
+
+  useEffect(() => {
+    stableOnDirtyChange(isDirty);
+  }, [isDirty, stableOnDirtyChange]);
 
   const selfieRef = useRef<HTMLDivElement>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
