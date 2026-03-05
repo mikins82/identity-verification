@@ -30,12 +30,16 @@ export function DroneDetailModal() {
   const [startDate, setStartDate] = useState(todayISO);
   const [endDate, setEndDate] = useState(tomorrowISO);
   const [imageError, setImageError] = useState(false);
+  const [open, setOpen] = useState(true);
 
-  const close = () => navigate("/");
+  const close = () => {
+    setOpen(false);
+    setTimeout(() => navigate("/"), 200);
+  };
 
   if (!drone) {
     return (
-      <Dialog open onOpenChange={close}>
+      <Dialog open={open} onOpenChange={(v) => !v && close()}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Drone not found</DialogTitle>
@@ -63,7 +67,7 @@ export function DroneDetailModal() {
   };
 
   return (
-    <Dialog open onOpenChange={close}>
+    <Dialog open={open} onOpenChange={(v) => !v && close()}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
           <div className="flex items-center gap-2">
