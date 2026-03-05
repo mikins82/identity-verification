@@ -26,6 +26,7 @@ import {
   type IdentityData,
 } from "@identity-verification/core";
 import { announce } from "@/lib/announcer";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -34,6 +35,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type VerificationStep = "selfie" | "phone" | "address";
 
@@ -77,6 +88,13 @@ export function ManualVerification({
   const [address, setAddress] = useState<Address>(EMPTY_ADDRESS);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const hasUnsavedData =
+    selfie !== null ||
+    phone.length > 0 ||
+    address.street.length > 0 ||
+    address.city.length > 0;
+  const blocker = useUnsavedChanges(hasUnsavedData);
 
   const currentIndex = STEPS.findIndex((s) => s.key === step);
   const isInitialMount = useRef(true);
@@ -237,6 +255,29 @@ export function ManualVerification({
           </Button>
         )}
       </div>
+
+      <AlertDialog open={blocker.state === "blocked"}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Leave verification?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your progress will be lost. You'll need to retake your selfie and
+              re-enter your information.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => blocker.reset?.()}>
+              Stay
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => blocker.proceed?.()}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              Leave
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
