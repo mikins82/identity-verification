@@ -9,6 +9,7 @@ interface DroneState {
   drones: Drone[];
   loaded: boolean;
   loading: boolean;
+  error: string | null;
   fetchDrones: () => Promise<void>;
 }
 
@@ -18,11 +19,19 @@ export const useDroneStore = create<DroneState>()(
       drones: [],
       loaded: false,
       loading: false,
+      error: null,
       fetchDrones: async () => {
         if (get().loaded || get().loading) return;
-        set({ loading: true });
-        await new Promise((resolve) => setTimeout(resolve, SIMULATED_LATENCY_MS));
-        set({ drones: DRONES, loaded: true, loading: false });
+        set({ loading: true, error: null });
+        try {
+          await new Promise((resolve) => setTimeout(resolve, SIMULATED_LATENCY_MS));
+          set({ drones: DRONES, loaded: true, loading: false });
+        } catch (err) {
+          set({
+            loading: false,
+            error: err instanceof Error ? err.message : "Failed to fetch drones",
+          });
+        }
       },
     }),
     {

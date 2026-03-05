@@ -4,4 +4,5 @@ export default defineWorkspace([
   "packages/core",
   "packages/headless",
   "packages/react",
+  "apps/web",
 ]);
