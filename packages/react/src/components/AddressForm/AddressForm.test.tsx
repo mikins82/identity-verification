@@ -129,6 +129,42 @@ describe("AddressForm", () => {
     expect(screen.getByPlaceholderText("Postal code")).toHaveValue("62701");
   });
 
+  it("syncs inputs when value prop changes externally", () => {
+    const onChange = vi.fn();
+    const { rerender } = render(
+      <AddressForm
+        onChange={onChange}
+        defaultCountry="US"
+        value={{
+          street: "123 Main St",
+          city: "Springfield",
+          state: "IL",
+          postalCode: "62701",
+        }}
+      />,
+    );
+
+    expect(screen.getByPlaceholderText("123 Main St")).toHaveValue("123 Main St");
+
+    rerender(
+      <AddressForm
+        onChange={onChange}
+        defaultCountry="US"
+        value={{
+          street: "789 Elm Dr",
+          city: "Shelbyville",
+          state: "OH",
+          postalCode: "43215",
+        }}
+      />,
+    );
+
+    expect(screen.getByPlaceholderText("123 Main St")).toHaveValue("789 Elm Dr");
+    expect(screen.getByPlaceholderText("City")).toHaveValue("Shelbyville");
+    expect(screen.getByPlaceholderText("State")).toHaveValue("OH");
+    expect(screen.getByPlaceholderText("Postal code")).toHaveValue("43215");
+  });
+
   it("applies custom className", () => {
     const { container } = render(
       <AddressForm onChange={vi.fn()} className="my-form" />,

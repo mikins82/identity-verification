@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useId } from "react";
+import { useState, useCallback, useMemo, useId, useEffect } from "react";
 import {
   COUNTRIES,
   validateAddress,
@@ -48,6 +48,17 @@ export function AddressForm({
     country: value?.country ?? initialCountry,
     postalCode: value?.postalCode ?? "",
   });
+  useEffect(() => {
+    if (!value) return;
+    setAddress((prev) => ({
+      street: value.street ?? prev.street,
+      city: value.city ?? prev.city,
+      state: value.state ?? prev.state,
+      country: value.country ?? prev.country,
+      postalCode: value.postalCode ?? prev.postalCode,
+    }));
+  }, [value]);
+
   const [fieldErrors, setFieldErrors] = useState<Record<string, string | undefined>>({});
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
   const fieldIdPrefix = useId();

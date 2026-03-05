@@ -47,12 +47,15 @@ export function CartItem({ item }: CartItemProps) {
         </div>
 
         <div className="flex items-center gap-4">
-          <Stepper
-            value={item.days}
-            onChange={(days) => updateDays(item.drone.id, days)}
-            min={1}
-            max={30}
-          />
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">Days:</span>
+            <Stepper
+              value={item.days}
+              onChange={(days) => updateDays(item.drone.id, days)}
+              min={1}
+              max={30}
+            />
+          </div>
 
           <span className="w-20 text-right font-semibold tabular-nums">
             {formatCurrency(subtotal)}

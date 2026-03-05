@@ -1,6 +1,5 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import type { Drone } from "@/data/drones";
+import { create } from "zustand";
 
 export interface CartItem {
   drone: Drone;
@@ -15,37 +14,32 @@ interface CartState {
   clear: () => void;
 }
 
-export const useCartStore = create<CartState>()(
-  persist(
-    (set) => ({
-      items: [],
-      addItem: (drone, days = 1) =>
-        set((state) => {
-          const existing = state.items.find((i) => i.drone.id === drone.id);
-          if (existing) {
-            return {
-              items: state.items.map((i) =>
-                i.drone.id === drone.id ? { ...i, days: i.days + days } : i
-              ),
-            };
-          }
-          return { items: [...state.items, { drone, days }] };
-        }),
-      removeItem: (droneId) =>
-        set((state) => ({
-          items: state.items.filter((i) => i.drone.id !== droneId),
-        })),
-      updateDays: (droneId, days) =>
-        set((state) => ({
+export const useCartStore = create<CartState>()((set) => ({
+  items: [],
+  addItem: (drone, days = 1) =>
+    set((state) => {
+      const existing = state.items.find((i) => i.drone.id === drone.id);
+      if (existing) {
+        return {
           items: state.items.map((i) =>
-            i.drone.id === droneId ? { ...i, days: Math.max(1, days) } : i
+            i.drone.id === drone.id ? { ...i, days: i.days + days } : i,
           ),
-        })),
-      clear: () => set({ items: [] }),
+        };
+      }
+      return { items: [...state.items, { drone, days }] };
     }),
-    { name: "skyrent-cart" }
-  )
-);
+  removeItem: (droneId) =>
+    set((state) => ({
+      items: state.items.filter((i) => i.drone.id !== droneId),
+    })),
+  updateDays: (droneId, days) =>
+    set((state) => ({
+      items: state.items.map((i) =>
+        i.drone.id === droneId ? { ...i, days: Math.max(1, days) } : i,
+      ),
+    })),
+  clear: () => set({ items: [] }),
+}));
 
 export function selectTotalPrice(state: CartState): number {
   return state.items.reduce((sum, i) => sum + i.drone.dailyPrice * i.days, 0);

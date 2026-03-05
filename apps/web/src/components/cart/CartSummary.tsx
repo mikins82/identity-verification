@@ -20,7 +20,7 @@ export function CartSummary() {
         <span className="text-lg font-bold">{formatCurrency(totalPrice)}</span>
       </div>
       <Button asChild className="mt-6 w-full" disabled={itemCount === 0}>
-        <Link to="/verify">
+        <Link to="/verify" state={{ fromCart: true }}>
           Proceed to Verification
           <ArrowRight className="ml-2 h-4 w-4" />
         </Link>

@@ -14,7 +14,7 @@ export function VerifyResultPage() {
   if (!allowed) return null;
 
   if (!identityData) {
-    navigate("/verify", { replace: true });
+    navigate("/verify", { replace: true, state: { fromCart: true } });
     return null;
   }
 
@@ -22,7 +22,7 @@ export function VerifyResultPage() {
 
   const handleRetry = () => {
     reset();
-    navigate("/verify");
+    navigate("/verify", { state: { fromCart: true } });
   };
 
   return (

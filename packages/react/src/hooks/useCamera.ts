@@ -41,6 +41,16 @@ export function useCamera(options: UseCameraOptions = {}): UseCameraReturn {
 
     return () => {
       unsub();
+      // Stop all media tracks so the camera is released (LED off, no ongoing stream)
+      const stream = controller.getStream() as MediaStream | null;
+      if (stream?.getTracks) {
+        stream.getTracks().forEach((t) => t.stop());
+      }
+      if (videoRef.current?.srcObject) {
+        const src = videoRef.current.srcObject as MediaStream;
+        if (src?.getTracks) src.getTracks().forEach((t) => t.stop());
+        videoRef.current.srcObject = null;
+      }
       controller.destroy();
       controllerRef.current = null;
     };
