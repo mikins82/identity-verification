@@ -19,12 +19,19 @@ export function CartSummary() {
         </span>
         <span className="text-lg font-bold">{formatCurrency(totalPrice)}</span>
       </div>
-      <Button asChild className="mt-6 w-full" disabled={itemCount === 0}>
-        <Link to="/verify" state={{ fromCart: true }}>
+      {itemCount === 0 ? (
+        <Button className="mt-6 w-full" disabled>
           Proceed to Verification
           <ArrowRight className="ml-2 h-4 w-4" />
-        </Link>
-      </Button>
+        </Button>
+      ) : (
+        <Button asChild className="mt-6 w-full">
+          <Link to="/verify" state={{ fromCart: true }}>
+            Proceed to Verification
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+        </Button>
+      )}
     </div>
   );
 }

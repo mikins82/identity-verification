@@ -1,5 +1,6 @@
 import type { Drone } from "@/data/drones";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface CartItem {
   drone: Drone;
@@ -14,7 +15,7 @@ interface CartState {
   clear: () => void;
 }
 
-export const useCartStore = create<CartState>()((set) => ({
+export const useCartStore = create<CartState>()(persist((set) => ({
   items: [],
   addItem: (drone, days = 1) =>
     set((state) => {
@@ -39,6 +40,9 @@ export const useCartStore = create<CartState>()((set) => ({
       ),
     })),
   clear: () => set({ items: [] }),
+}), {
+  name: "skyrent-cart",
+  partialize: (state) => ({ items: state.items }),
 }));
 
 export function selectTotalPrice(state: CartState): number {
