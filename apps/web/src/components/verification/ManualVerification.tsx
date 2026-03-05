@@ -250,11 +250,14 @@ function SelfiePreview({
 }) {
   return (
     <div className="space-y-4">
-      <div className="overflow-hidden rounded-lg border">
+      <div
+        className="mx-auto w-full max-w-[400px] overflow-hidden rounded-lg border"
+        style={{ aspectRatio: "3/4" }}
+      >
         <img
           src={selfie}
           alt="Captured selfie"
-          className="w-full object-cover"
+          className="h-full w-full object-cover"
         />
       </div>
       <div className="flex items-center gap-2">

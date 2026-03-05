@@ -98,8 +98,12 @@ export function CheckoutSummary() {
                     Address
                   </p>
                   <p className="text-sm">
-                    {identityData.address.street},{" "}
-                    {identityData.address.city}
+                    {identityData.address.street}
+                    <br />
+                    {identityData.address.city}, {identityData.address.state}{" "}
+                    {identityData.address.postalCode}
+                    <br />
+                    {identityData.address.country}
                   </p>
                 </div>
               </div>
