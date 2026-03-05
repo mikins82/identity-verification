@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckoutSummary } from "@/components/checkout/CheckoutSummary";
 import { useRouteGuard } from "@/hooks/useRouteGuard";
 
-export function CheckoutPage() {
+export default function CheckoutPage() {
   const allowed = useRouteGuard({ requireCart: true, requireVerified: true });
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);

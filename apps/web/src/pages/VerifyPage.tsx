@@ -27,7 +27,7 @@ function VerificationSkeleton() {
   );
 }
 
-export function VerifyPage() {
+export default function VerifyPage() {
   const allowed = useRouteGuard({ requireCart: true, requireCartNavigation: true });
   const navigate = useNavigate();
   const setIdentityData = useVerificationStore((s) => s.setIdentityData);

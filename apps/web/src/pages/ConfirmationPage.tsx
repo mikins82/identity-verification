@@ -10,7 +10,7 @@ function generateOrderId(): string {
   return `SR-${timestamp}-${random}`;
 }
 
-export function ConfirmationPage() {
+export default function ConfirmationPage() {
   const navigate = useNavigate();
   const items = useCartStore((s) => s.items);
   const totalPrice = useCartStore(selectTotalPrice);

@@ -5,7 +5,7 @@ import { ResultCard } from "@/components/verification/ResultCard";
 import { useRouteGuard } from "@/hooks/useRouteGuard";
 import { useVerificationStore } from "@/store/verificationStore";
 
-export function VerifyResultPage() {
+export default function VerifyResultPage() {
   const allowed = useRouteGuard({ requireCart: true });
   const navigate = useNavigate();
   const identityData = useVerificationStore((s) => s.identityData);

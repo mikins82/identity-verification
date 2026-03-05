@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
 
-export function CartPage() {
+export default function CartPage() {
   const items = useCartStore((s) => s.items);
 
   if (items.length === 0) {
