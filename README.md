@@ -8,20 +8,30 @@ A layered identity verification SDK with a demo drone rental application showcas
 graph TB
   subgraph consumer [Consumer Applications]
     DemoApp["SkyRent Drones (Demo App)"]
-    ThirdParty["Any React App"]
+    ReactApp["Any React App"]
+    RNApp["Any React Native App"]
+    OtherApp["Vue / Angular / Custom"]
   end
 
-  subgraph sdk [SDK Packages]
-    ReactPkg["@identity-verification/react"]
-    HeadlessPkg["@identity-verification/headless"]
-    CorePkg["@identity-verification/core"]
+  subgraph sdk ["SDK Packages — @identity-verification/*"]
+    ReactPkg["react"]
+    RNPkg["react-native *"]
+    OtherPkg["vue / angular / … **"]
+    HeadlessPkg["headless"]
+    CorePkg["core"]
   end
 
   DemoApp --> ReactPkg
-  ThirdParty --> ReactPkg
+  ReactApp --> ReactPkg
+  RNApp --> RNPkg
+  OtherApp -.-> OtherPkg
   ReactPkg --> HeadlessPkg
+  RNPkg --> HeadlessPkg
+  OtherPkg -.-> HeadlessPkg
   HeadlessPkg --> CorePkg
 ```
+
+> **\*** proof of concept — **\*\*** hypothetical — **- - ->** potential extension path
 
 The SDK is split into three layers so each can be consumed independently:
 
