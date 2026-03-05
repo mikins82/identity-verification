@@ -2,7 +2,7 @@
   "name": "identity-verification-monorepo",
   "private": true,
   "scripts": {
-    "init": "pnpm install && pnpm build && pnpm dev",
+    "setup": "pnpm install && pnpm build && pnpm dev",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "test": "turbo run test:unit",
