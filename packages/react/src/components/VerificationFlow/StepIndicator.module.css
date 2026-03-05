@@ -4,29 +4,24 @@
 
 .steps {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 0;
+  gap: var(--iv-spacing-xl, 32px);
 }
 
 .stepItem {
   display: flex;
   align-items: center;
-  gap: var(--iv-spacing-sm, 8px);
 }
 
-.connector {
-  width: 48px;
-  height: 2px;
-  background: var(--iv-color-border, #e5e7eb);
-  transition: background-color 0.3s ease;
-}
-
-.connectorCompleted {
-  background: var(--iv-color-primary, #0066ff);
+.stepCircle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
 .badge {
@@ -67,11 +62,12 @@
 }
 
 .label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--iv-color-text-secondary, #6b7280);
   transition: color 0.3s ease;
   white-space: nowrap;
+  text-align: center;
 }
 
 .labelActive {
@@ -84,18 +80,13 @@
 }
 
 @media (max-width: 480px) {
-  .connector {
-    width: 24px;
-  }
-
-  .label {
-    display: none;
+  .steps {
+    gap: var(--iv-spacing-lg, 20px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .badge,
-  .connector,
   .label {
     transition: none;
   }

@@ -1,5 +1,5 @@
-import type { VerificationStep } from "./useVerificationReducer";
 import styles from "./StepIndicator.module.css";
+import type { VerificationStep } from "./useVerificationReducer";
 
 interface StepDef {
   key: VerificationStep;
@@ -23,10 +23,7 @@ export function StepIndicator({ currentStep, className }: StepIndicatorProps) {
   const effectiveIndex = currentIndex >= 0 ? currentIndex : STEPS.length;
 
   return (
-    <nav
-      aria-label="Verification progress"
-      className={`${styles.container} ${className ?? ""}`}
-    >
+    <nav aria-label="Verification progress" className={`${styles.container} ${className ?? ""}`}>
       <ol className={styles.steps}>
         {STEPS.map((step, i) => {
           const completed = i < effectiveIndex;
@@ -34,40 +31,36 @@ export function StepIndicator({ currentStep, className }: StepIndicatorProps) {
 
           return (
             <li key={step.key} className={styles.stepItem}>
-              {i > 0 && (
+              <div className={styles.stepCircle}>
                 <div
-                  className={`${styles.connector} ${completed ? styles.connectorCompleted : ""}`}
-                  aria-hidden="true"
-                />
-              )}
-              <div
-                className={`${styles.badge} ${active ? styles.badgeActive : ""} ${completed ? styles.badgeCompleted : ""}`}
-                aria-current={active ? "step" : undefined}
-              >
-                {completed ? (
-                  <svg
-                    className={styles.checkIcon}
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M3.5 8.5L6.5 11.5L12.5 4.5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ) : (
-                  <span className={styles.number}>{step.number}</span>
-                )}
+                  className={`${styles.badge} ${active ? styles.badgeActive : ""} ${completed ? styles.badgeCompleted : ""}`}
+                  aria-current={active ? "step" : undefined}
+                >
+                  {completed ? (
+                    <svg
+                      className={styles.checkIcon}
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M3.5 8.5L6.5 11.5L12.5 4.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    <span className={styles.number}>{step.number}</span>
+                  )}
+                </div>
+                <span
+                  className={`${styles.label} ${active ? styles.labelActive : ""} ${completed ? styles.labelCompleted : ""}`}
+                >
+                  {step.label}
+                </span>
               </div>
-              <span
-                className={`${styles.label} ${active ? styles.labelActive : ""} ${completed ? styles.labelCompleted : ""}`}
-              >
-                {step.label}
-              </span>
             </li>
           );
         })}

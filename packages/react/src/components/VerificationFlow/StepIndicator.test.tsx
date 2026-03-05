@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { StepIndicator } from "./StepIndicator";
 
 describe("StepIndicator", () => {
@@ -95,18 +95,18 @@ describe("StepIndicator", () => {
     expect(completedBadges).toHaveLength(3);
   });
 
-  it("renders connectors between steps (but not before the first)", () => {
+  it("renders labels below each step circle", () => {
+    const { container } = render(<StepIndicator currentStep="selfie" />);
+
+    const stepCircles = container.querySelectorAll(".stepCircle");
+    expect(stepCircles).toHaveLength(3);
+  });
+
+  it("does not render connector lines between steps", () => {
     const { container } = render(<StepIndicator currentStep="selfie" />);
 
     const connectors = container.querySelectorAll(".connector");
-    expect(connectors).toHaveLength(2);
-  });
-
-  it("marks connectors as completed for passed steps", () => {
-    const { container } = render(<StepIndicator currentStep="address" />);
-
-    const completedConnectors = container.querySelectorAll(".connectorCompleted");
-    expect(completedConnectors).toHaveLength(1);
+    expect(connectors).toHaveLength(0);
   });
 
   it("applies custom className", () => {
