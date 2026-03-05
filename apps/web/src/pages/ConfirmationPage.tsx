@@ -6,12 +6,17 @@ import { useCartStore } from "@/store/cartStore";
 export default function ConfirmationPage() {
   const navigate = useNavigate();
   const completedOrder = useCartStore((s) => s.completedOrder);
+  const clearCompletedOrder = useCartStore((s) => s.clearCompletedOrder);
 
   useEffect(() => {
     if (!completedOrder) {
       navigate("/", { replace: true });
     }
   }, [completedOrder, navigate]);
+
+  useEffect(() => {
+    return () => clearCompletedOrder();
+  }, [clearCompletedOrder]);
 
   if (!completedOrder) return null;
 
