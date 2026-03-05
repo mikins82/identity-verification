@@ -14,6 +14,7 @@ export type { CameraState, CameraError };
 
 interface UseCameraOptions {
   facingMode?: CameraOptions["facingMode"];
+  imageQuality?: number;
 }
 
 interface UseCameraReturn {
@@ -37,7 +38,7 @@ try {
 }
 
 export function useCamera(options: UseCameraOptions = {}): UseCameraReturn {
-  const { facingMode = "user" } = options;
+  const { facingMode = "user", imageQuality = 0.8 } = options;
   const cameraRef = useRef<{ takePhoto(opts?: Record<string, unknown>): Promise<{ path: string }> } | null>(null);
   const controllerRef = useRef<CameraController | null>(null);
   const [state, setState] = useState<CameraState>({ status: "initializing" });
@@ -47,7 +48,7 @@ export function useCamera(options: UseCameraOptions = {}): UseCameraReturn {
 
   useEffect(() => {
     const adapter = new ReactNativeCameraAdapter();
-    const controller = new CameraController(adapter, { facingMode });
+    const controller = new CameraController(adapter, { facingMode, imageQuality });
     controllerRef.current = controller;
 
     const unsub = controller.subscribe(setState);
@@ -58,13 +59,13 @@ export function useCamera(options: UseCameraOptions = {}): UseCameraReturn {
       controller.destroy();
       controllerRef.current = null;
     };
-  }, [facingMode]);
+  }, [facingMode, imageQuality]);
 
   const capture = useCallback(async () => {
     if (!cameraRef.current || state.status !== "streaming") return;
 
     try {
-      const imageData = await capturePhoto(cameraRef.current as never);
+      const imageData = await capturePhoto(cameraRef.current as never, imageQuality);
       controllerRef.current?.retake();
       setState({ status: "preview", imageData });
     } catch {
@@ -73,7 +74,7 @@ export function useCamera(options: UseCameraOptions = {}): UseCameraReturn {
         error: { type: "stream-error", message: "Failed to capture photo" },
       });
     }
-  }, [state.status]);
+  }, [state.status, imageQuality]);
 
   const retake = useCallback(() => {
     controllerRef.current?.retake();

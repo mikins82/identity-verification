@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,12 +8,14 @@ import {
   StyleSheet,
 } from "react-native";
 import { useCamera, type CameraError } from "../../hooks/useCamera";
+import { useCallbackRef } from "../../hooks/useCallbackRef";
 import { useTheme, useNumericSpacing, useBorderRadius } from "../../theme/useTheme";
 import { FaceGuideOverlay } from "./FaceGuideOverlay";
 
 export interface SelfieCaptureProps {
   onCapture: (base64: string) => void;
   facingMode?: "user" | "environment";
+  imageQuality?: number;
   guideShape?: "oval" | "rectangle";
   onError?: (error: CameraError) => void;
 }
@@ -21,21 +23,21 @@ export interface SelfieCaptureProps {
 export function SelfieCapture({
   onCapture,
   facingMode = "user",
+  imageQuality = 0.8,
   guideShape = "oval",
   onError,
 }: SelfieCaptureProps) {
-  const { CameraView, state, capture, retake, retry } = useCamera({ facingMode });
+  const { CameraView, state, capture, retake, retry } = useCamera({ facingMode, imageQuality });
+  const stableOnError = useCallbackRef(onError ?? (() => {}));
   const theme = useTheme();
   const spacing = useNumericSpacing();
   const borderRadius = useBorderRadius();
-  const onErrorRef = useRef(onError);
-  onErrorRef.current = onError;
 
   useEffect(() => {
-    if (state.status === "error" && onErrorRef.current) {
-      onErrorRef.current(state.error);
+    if (state.status === "error" && onError) {
+      stableOnError(state.error);
     }
-  }, [state]);
+  }, [state, onError, stableOnError]);
 
   const handleCapture = useCallback(() => {
     capture();

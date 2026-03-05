@@ -81,10 +81,22 @@ export class ReactNativeCameraAdapter implements CameraAdapter<ReactNativeCamera
   }
 }
 
+function qualityToPrioritization(
+  quality?: number,
+): "speed" | "balanced" | "quality" {
+  if (quality === undefined) return "balanced";
+  if (quality < 0.4) return "speed";
+  if (quality >= 0.8) return "quality";
+  return "balanced";
+}
+
 export async function capturePhoto(
   cameraRef: VisionCameraRef,
+  imageQuality?: number,
 ): Promise<string> {
-  const photo = await cameraRef.takePhoto({ qualityPrioritization: "balanced" });
+  const photo = await cameraRef.takePhoto({
+    qualityPrioritization: qualityToPrioritization(imageQuality),
+  });
 
   if (RNFS) {
     const base64 = await RNFS.readFile(photo.path, "base64");
