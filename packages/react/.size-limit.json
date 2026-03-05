@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Full bundle (ESM)",
+    "path": "dist/index.js",
+    "limit": "10 kB",
+    "ignore": [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "@identity-verification/core",
+      "@identity-verification/headless",
+      "@identity-verification/headless/web"
+    ]
+  },
+  {
+    "name": "PhoneInput (tree-shaken)",
+    "path": "dist/index.js",
+    "import": "{ PhoneInput }",
+    "limit": "4 kB",
+    "ignore": [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "@identity-verification/core",
+      "@identity-verification/headless",
+      "@identity-verification/headless/web"
+    ]
+  },
+  {
+    "name": "SelfieCapture (tree-shaken)",
+    "path": "dist/index.js",
+    "import": "{ SelfieCapture }",
+    "limit": "4 kB",
+    "ignore": [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "@identity-verification/core",
+      "@identity-verification/headless",
+      "@identity-verification/headless/web"
+    ]
+  },
+  {
+    "name": "AddressForm (tree-shaken)",
+    "path": "dist/index.js",
+    "import": "{ AddressForm }",
+    "limit": "4 kB",
+    "ignore": [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "@identity-verification/core",
+      "@identity-verification/headless",
+      "@identity-verification/headless/web"
+    ]
+  },
+  {
+    "name": "CSS",
+    "path": "dist/react.css",
+    "limit": "3 kB"
+  }
+]

@@ -201,6 +201,28 @@ SDK components use CSS custom properties with `--iv-` prefix. All have fallback 
 | `--iv-font-family` | `system-ui` | Font family |
 | `--iv-spacing-xs` through `--iv-spacing-xl` | `4px`–`32px` | Spacing scale |
 
+## Bundle Size & Tree-shaking
+
+The React SDK ships with `preserveModules` enabled, so each component is a separate file. Consuming bundlers only pull in the code they need — importing `PhoneInput` never pulls in camera/selfie code.
+
+| Import | Brotli | Gzip |
+| --- | ---: | ---: |
+| Full SDK (all exports) | ~7.5 kB | ~9.8 kB |
+| `{ PhoneInput }` | ~2.7 kB | ~3.1 kB |
+| `{ SelfieCapture }` | ~1.7 kB | ~2.0 kB |
+| `{ AddressForm }` | ~2.7 kB | ~3.1 kB |
+| CSS (`styles.css`) | ~2.4 kB | ~2.8 kB |
+
+Sizes exclude peer dependencies (`react`, `react-dom`) and sibling SDK packages.
+
+Bundle budgets are enforced in CI via [size-limit](https://github.com/ai/size-limit), and a tree-shaking verification script confirms no cross-component code leakage.
+
+```bash
+pnpm size              # Report sizes for @identity-verification/react
+pnpm size:check        # Fail if any budget is exceeded
+pnpm verify:treeshake  # Prove PhoneInput doesn't pull in camera code
+```
+
 ## Tech Stack
 
 | Concern | Choice |

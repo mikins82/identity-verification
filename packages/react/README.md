@@ -102,6 +102,27 @@ Components use CSS custom properties prefixed with `--iv-`. `ThemeProvider` is o
 
 See the [root README](../../README.md#available-tokens) for the full list of theme tokens.
 
+## Bundle Size
+
+The SDK uses `preserveModules` to ensure reliable tree-shaking. Importing a single component only pulls in the code for that component and its direct dependencies — no camera code leaks into `PhoneInput`, and no phone logic leaks into `SelfieCapture`.
+
+| Import | Brotli | Gzip |
+| --- | ---: | ---: |
+| Full SDK (all exports) | ~7.5 kB | ~9.8 kB |
+| `{ PhoneInput }` | ~2.7 kB | ~3.1 kB |
+| `{ SelfieCapture }` | ~1.7 kB | ~2.0 kB |
+| `{ AddressForm }` | ~2.7 kB | ~3.1 kB |
+| CSS (`styles.css`) | ~2.4 kB | ~2.8 kB |
+
+Sizes exclude peer dependencies (`react`, `react-dom`) and sibling packages (`@identity-verification/core`, `@identity-verification/headless`).
+
+Bundle budgets are enforced in CI via [size-limit](https://github.com/ai/size-limit) and a custom tree-shaking verification script. Run locally:
+
+```bash
+pnpm size          # Report current sizes
+pnpm size:check    # Fail if any limit is exceeded
+```
+
 ## Re-exports
 
 This package re-exports key items from `@identity-verification/headless` and `@identity-verification/core` for convenience — theme utilities, adapters, the verification reducer, and core types are all accessible directly.
@@ -115,4 +136,5 @@ pnpm test:unit     # Run Vitest unit tests (React Testing Library)
 pnpm test:watch    # Vitest in watch mode
 pnpm lint          # ESLint
 pnpm typecheck     # TypeScript type checking
+pnpm size          # Check bundle sizes
 ```

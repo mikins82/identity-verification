@@ -1,0 +1,32 @@
+name: Bundle Size
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  size:
+    name: Check bundle size
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build all packages
+        run: pnpm build
+
+      - name: Check bundle size limits
+        run: pnpm size:check
+
+      - name: Verify tree-shaking
+        run: pnpm verify:treeshake
