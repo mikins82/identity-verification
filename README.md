@@ -171,7 +171,7 @@ Static dataset of ~20 countries with dial codes, flag emojis, phone length rules
 | `SelfieCapture` | `onCapture`, `facingMode?`, `imageQuality?`, `guideShape?`, `onError?` | Camera capture with face guide overlay |
 | `PhoneInput` | `onChange`, `defaultCountry?`, `value?`, `onValidationChange?` | Phone input with country selector dropdown |
 | `AddressForm` | `onChange`, `defaultCountry?`, `value?`, `onValidationChange?` | 5-field address form with country-driven postal validation |
-| `VerificationFlow` | `onComplete`, `onStepChange?`, `onError?`, `verificationOptions?` | Full orchestrated 3-step wizard (selfie → phone → address → verify) |
+| `VerificationFlow` | `onComplete`, `onResult?`, `onStepChange?`, `onError?`, `verificationOptions?` | Full orchestrated 3-step wizard (selfie → phone → address → verify) |
 | `ThemeProvider` | `theme?` | Applies custom theme via CSS custom properties |
 | `StepIndicator` | `currentStep` | Progress indicator for verification steps |
 
@@ -203,6 +203,28 @@ import '@identity-verification/react/styles.css';
   />
 </ThemeProvider>
 ```
+
+#### Usage: Orchestrated Flow With `onResult`
+
+When `onResult` is provided, the component hands control to the consumer after verification. Instead of showing its built-in complete/failed screens, it stays on the loading spinner while the consumer navigates away or renders its own result UI.
+
+```tsx
+<VerificationFlow
+  onComplete={() => {}}
+  onResult={(result) => {
+    saveResult(result);
+    navigate('/result');
+  }}
+/>
+```
+
+**`onResult` props behavior:**
+
+| Prop | Without `onResult` | With `onResult` |
+|------|-------------------|-----------------|
+| `onComplete` | Called on success, then shows built-in success screen | Called on success (still fires for backward compatibility) |
+| `onResult` | — | Called for **both** success and failure |
+| After verification | Shows built-in complete/failed screen | Stays on loading spinner; consumer controls navigation |
 
 ## Theming
 
@@ -273,11 +295,12 @@ pnpm verify:treeshake  # Prove PhoneInput doesn't pull in camera code
 ### User Flow
 
 ```
-/ (Catalog) → /cart → /verify → /verify/result → /checkout → /checkout/confirmation
+/ (Catalog) → /cart → /verify        → /verify/result → /checkout → /checkout/confirmation
+                    → /verify/auto   ↗
 ```
 
 1. **Browse & Select** — Drone catalog with category tabs (Filming / Cargo), daily pricing, specs, and a day-count stepper. Add drones to cart.
-2. **Identity Verification** — Three-step wizard using SDK components: selfie capture → phone input → address form. Calls `getIdentityData()` on submit.
+2. **Identity Verification** — Two modes: *custom demo* (`/verify`) manually composes SDK primitives, while *drop-in demo* (`/verify/auto`) uses the `VerificationFlow` orchestrated component with `onResult`. Both routes feed into the same result page.
 3. **Verification Result** — Displays selfie, phone, address, score bar, and pass/fail status. If failed, user can retry or return to cart. If passed, proceed to checkout.
 4. **Checkout** — Order summary with selected drones, rental duration, total price, and verified identity card. "Complete Rental" button confirms the order.
 5. **Confirmation** — Order ID, itemized receipt, and a link to browse more drones.
@@ -290,6 +313,7 @@ pnpm verify:treeshake  # Prove PhoneInput doesn't pull in camera code
 | Routing | React Router v7 with lazy-loaded pages and route guards (`useRouteGuard`) |
 | Error handling | App-level `ErrorBoundary` + component-level boundary around verification |
 | Accessibility | `aria-live` announcer for step transitions, cart changes, and item removal; `RouteGuardPending` loading state instead of flash-of-nothing |
+| Verification modes | Custom demo (`/verify`, manual composition) + drop-in demo (`/verify/auto`, orchestrated `VerificationFlow` with `onResult`) |
 | Code splitting | `React.lazy` for all pages except the catalog (first paint) |
 | UI | Tailwind v4 + shadcn/ui (Radix primitives) + Lucide icons |
 

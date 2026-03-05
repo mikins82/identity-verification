@@ -6,6 +6,7 @@ import { CatalogPage } from "@/pages/CatalogPage";
 
 const CartPage = lazy(() => import("@/pages/CartPage"));
 const VerifyPage = lazy(() => import("@/pages/VerifyPage"));
+const VerifyAutoPage = lazy(() => import("@/pages/VerifyAutoPage"));
 const VerifyResultPage = lazy(() => import("@/pages/VerifyResultPage"));
 const CheckoutPage = lazy(() => import("@/pages/CheckoutPage"));
 const ConfirmationPage = lazy(() => import("@/pages/ConfirmationPage"));
@@ -30,6 +31,7 @@ export const router = createBrowserRouter([
       { index: true, element: <CatalogPage /> },
       { path: "cart", element: <Lazy><CartPage /></Lazy> },
       { path: "verify", element: <Lazy><VerifyPage /></Lazy> },
+      { path: "verify/auto", element: <Lazy><VerifyAutoPage /></Lazy> },
       { path: "verify/result", element: <Lazy><VerifyResultPage /></Lazy> },
       { path: "checkout", element: <Lazy><CheckoutPage /></Lazy> },
       { path: "checkout/confirmation", element: <Lazy><ConfirmationPage /></Lazy> },

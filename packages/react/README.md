@@ -52,6 +52,31 @@ function App() {
 }
 ```
 
+### Orchestrated Flow With `onResult`
+
+When `onResult` is provided, the component hands control to the consumer after verification completes. Instead of showing its built-in complete/failed screens, it stays on the loading spinner while the consumer navigates away or renders its own result UI.
+
+```tsx
+<VerificationFlow
+  onComplete={() => {}}
+  onResult={(result) => {
+    saveResult(result);
+    navigate('/result');
+  }}
+/>
+```
+
+#### `VerificationFlow` Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `onComplete` | `(result: IdentityData) => void` | Yes | Called when verification succeeds. When `onResult` is **not** provided, the built-in success screen is shown afterward. |
+| `onResult` | `(result: IdentityData) => void` | No | Called for **both** success and failure. When provided, the component stays on the loading spinner after verification and does not transition to built-in result screens — the consumer controls what happens next. |
+| `onStepChange` | `(step: VerificationStep) => void` | No | Called when the active step changes (selfie, phone, address). |
+| `onError` | `(error: Error) => void` | No | Called when verification throws an unexpected error. |
+| `verificationOptions` | `VerificationOptions` | No | Passed through to `getIdentityData()`. Set `{ simulatedLatencyMs: 0 }` for tests. |
+| `className` | `string` | No | Additional CSS class for the root container. |
+
 ### Manual Composition
 
 Use individual components for full control over layout and flow:

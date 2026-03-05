@@ -19,6 +19,7 @@ import styles from "./VerificationFlow.module.css";
 
 export interface VerificationFlowProps {
   onComplete: (result: IdentityData) => void;
+  onResult?: (result: IdentityData) => void;
   onStepChange?: (step: VerificationStep) => void;
   onError?: (error: VerificationError | Error) => void;
   verificationOptions?: VerificationOptions;
@@ -33,6 +34,7 @@ const STEP_LABELS: Record<string, string> = {
 
 export function VerificationFlow({
   onComplete,
+  onResult,
   onStepChange,
   onError,
   verificationOptions,
@@ -54,6 +56,7 @@ export function VerificationFlow({
   } = useVerificationReducer();
 
   const stableOnComplete = useCallbackRef(onComplete);
+  const stableOnResult = useCallbackRef(onResult ?? (() => {}));
   const stableOnError = useCallbackRef(onError ?? (() => {}));
   const stableOnStepChange = useCallbackRef(onStepChange ?? (() => {}));
 
@@ -104,20 +107,28 @@ export function VerificationFlow({
         verificationOptions,
       );
 
-      if (result.status === "verified") {
+      if (onResult) {
+        stableOnComplete(result);
+        stableOnResult(result);
+      } else if (result.status === "verified") {
         verifySuccess(result);
         stableOnComplete(result);
       } else {
         verifyFailure(result);
       }
     } catch (err) {
-      verifyFailure({
+      const failedResult: IdentityData = {
         selfieUrl: state.selfie,
         phone: state.phone,
         address: state.address as Address,
         score: 0,
         status: "failed",
-      });
+      };
+      if (onResult) {
+        stableOnResult(failedResult);
+      } else {
+        verifyFailure(failedResult);
+      }
       stableOnError(err as Error);
     }
   }, [
@@ -125,11 +136,13 @@ export function VerificationFlow({
     state.phone,
     state.countryCode,
     state.address,
+    onResult,
     startVerify,
     verifySuccess,
     verifyFailure,
     verificationOptions,
     stableOnComplete,
+    stableOnResult,
     stableOnError,
   ]);
 

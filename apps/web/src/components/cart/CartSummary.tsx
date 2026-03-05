@@ -25,12 +25,20 @@ export function CartSummary() {
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       ) : (
-        <Button asChild className="mt-6 w-full">
-          <Link to="/verify" state={{ fromCart: true }}>
-            Proceed to Verification
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-        </Button>
+        <div className="mt-6 flex flex-col gap-3">
+          <Button asChild className="w-full">
+            <Link to="/verify" state={{ fromCart: true }}>
+              Verify (custom demo)
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="w-full">
+            <Link to="/verify/auto" state={{ fromCart: true }}>
+              Verify (drop-in demo)
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
       )}
     </div>
   );

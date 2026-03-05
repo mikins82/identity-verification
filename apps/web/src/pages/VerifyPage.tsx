@@ -37,7 +37,7 @@ export default function VerifyPage() {
 
   const handleComplete = (data: IdentityData) => {
     setIdentityData(data);
-    navigate("/verify/result");
+    navigate("/verify/result", { state: { fromCart: true, verifyPath: "/verify" } });
   };
 
   return (
