@@ -27,6 +27,10 @@ graph TB
 
 **`apps/web`** — SkyRent Drones demo app. Vite + React + Tailwind v4 + shadcn/ui + Zustand + React Router.
 
+**`@identity-verification/headless`** *(scaffolded — not part of current deliverable)* — Platform-agnostic state machines, camera/permission adapters (browser + React Native), and theme-to-CSS-custom-property mapping. Designed as the shared logic layer that `react` and `react-native` can both consume.
+
+**`@identity-verification/react-native`** *(proof of concept — not part of current deliverable)* — React Native mirror of the React SDK (SelfieCapture, PhoneInput, AddressForm, VerificationFlow) built on top of `headless`. Included to demonstrate that the architecture extends to mobile; a companion demo app can be added in the future.
+
 ### Monorepo Structure
 
 ```
@@ -34,6 +38,8 @@ incode-task/
   packages/
     core/               # @identity-verification/core — Pure TypeScript
     react/              # @identity-verification/react — React components
+    headless/           # @identity-verification/headless — State machines & adapters (scaffolded)
+    react-native/       # @identity-verification/react-native — React Native components (proof of concept)
   apps/
     web/                # SkyRent Drones demo app
 ```
@@ -68,6 +74,16 @@ pnpm build         # Build all packages (core → react → web)
 ```bash
 pnpm test:unit     # Vitest unit tests (core + react)
 pnpm test:e2e      # Playwright E2E tests (starts dev server automatically)
+```
+
+### Release (Changesets)
+
+The monorepo is pre-configured with [Changesets](https://github.com/changesets/changesets) for versioning and publishing. No changesets have been generated yet — the tooling is in place for when the packages are ready for their first release.
+
+```bash
+pnpm changeset          # Create a changeset describing your change
+pnpm version-packages   # Consume changesets, bump versions, update changelogs
+pnpm release            # Build all packages and publish to npm
 ```
 
 ### Other Commands
