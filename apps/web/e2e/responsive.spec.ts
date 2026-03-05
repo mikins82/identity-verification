@@ -25,7 +25,7 @@ test.describe("Responsive: Mobile (375px)", () => {
       .getByRole("button", { name: "Add to Cart" })
       .first();
     await firstAddButton.click();
-    await page.getByText(/added to cart/i).waitFor();
+    await page.getByText(/added to cart/i).first().waitFor();
 
     await page.locator('a[href="/cart"]').click();
     await expect(page.getByText(/Order Summary/i)).toBeVisible();
@@ -43,7 +43,7 @@ test.describe("Responsive: Mobile (375px)", () => {
       .getByRole("button", { name: "Add to Cart" })
       .first();
     await firstAddButton.click();
-    await page.getByText(/added to cart/i).waitFor();
+    await page.getByText(/added to cart/i).first().waitFor();
 
     await page.locator('a[href="/cart"]').click();
     await page.getByRole("link", { name: /Proceed to Verification/i }).click();
@@ -82,7 +82,7 @@ test.describe("Responsive: Tablet (768px)", () => {
       .getByRole("button", { name: "Add to Cart" })
       .first();
     await firstAddButton.click();
-    await page.getByText(/added to cart/i).waitFor();
+    await page.getByText(/added to cart/i).first().waitFor();
 
     await page.locator('a[href="/cart"]').click();
     await page.getByRole("link", { name: /Proceed to Verification/i }).click();

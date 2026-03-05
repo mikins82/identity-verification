@@ -52,7 +52,7 @@ test.describe("Catalog Page", () => {
       .first();
     await firstAddButton.click();
 
-    await expect(page.getByText(/added to cart/i)).toBeVisible();
+    await expect(page.getByText(/added to cart/i).first()).toBeVisible();
   });
 
   test("adding multiple drones to cart", async ({ page }) => {

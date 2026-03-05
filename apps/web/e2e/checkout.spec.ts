@@ -9,7 +9,7 @@ async function completeVerificationFlow(page: import("@playwright/test").Page) {
     .getByRole("button", { name: "Add to Cart" })
     .first();
   await firstAddButton.click();
-  await page.getByText(/added to cart/i).waitFor();
+  await page.getByText(/added to cart/i).first().waitFor();
 
   await page.locator('a[href="/cart"]').click();
   await page.getByRole("link", { name: /Proceed to Verification/i }).click();

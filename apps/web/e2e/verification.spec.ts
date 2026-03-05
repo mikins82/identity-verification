@@ -16,7 +16,7 @@ test.describe("Verification Flow", () => {
       .getByRole("button", { name: "Add to Cart" })
       .first();
     await firstAddButton.click();
-    await expect(page.getByText(/added to cart/i)).toBeVisible();
+    await expect(page.getByText(/added to cart/i).first()).toBeVisible();
 
     await page.locator('a[href="/cart"]').click();
     await expect(page.getByText(/Order Summary/i)).toBeVisible();
@@ -85,7 +85,7 @@ test.describe("Verification Flow", () => {
       .getByRole("button", { name: "Add to Cart" })
       .first();
     await firstAddButton.click();
-    await expect(page.getByText(/added to cart/i)).toBeVisible();
+    await expect(page.getByText(/added to cart/i).first()).toBeVisible();
 
     await page.locator('a[href="/cart"]').click();
     await page.getByRole("link", { name: /Proceed to Verification/i }).click();

@@ -5,7 +5,12 @@ import type { Page } from "@playwright/test";
  * Must be called BEFORE page.goto() since it uses addInitScript.
  */
 export async function mockCamera(page: Page): Promise<void> {
-  await page.context().grantPermissions(["camera"]);
+  try {
+    await page.context().grantPermissions(["camera"]);
+  } catch {
+    // Firefox and WebKit don't support granting camera permission;
+    // addInitScript below handles the mock regardless.
+  }
 
   await page.addInitScript(() => {
     const canvas = Object.assign(document.createElement("canvas"), {
