@@ -5,12 +5,12 @@ React components for identity verification — selfie capture, phone input, addr
 ## Installation
 
 ```bash
-pnpm add @identity-verification/react
+pnpm add @identity-verification/react @identity-verification/core
 ```
 
 Peer dependencies: `react` >=18.0.0, `react-dom` >=18.0.0
 
-Don't forget to import the stylesheet:
+Import the stylesheet in your app entry point:
 
 ```typescript
 import '@identity-verification/react/styles.css';
@@ -43,8 +43,8 @@ function App() {
   return (
     <ThemeProvider theme={{ colors: { primary: '#7c3aed' } }}>
       <VerificationFlow
-        onComplete={(result) => console.log(result)}
-        onStepChange={(step) => console.log('Step:', step)}
+        onComplete={(result) => handleVerified(result)}
+        onStepChange={(step) => trackAnalytics(step)}
         verificationOptions={{ simulatedLatencyMs: 1500 }}
       />
     </ThemeProvider>
@@ -116,7 +116,7 @@ The SDK uses `preserveModules` to ensure reliable tree-shaking. Importing a sing
 
 Sizes exclude peer dependencies (`react`, `react-dom`) and sibling packages (`@identity-verification/core`, `@identity-verification/headless`).
 
-Bundle budgets are enforced in CI via [size-limit](https://github.com/ai/size-limit) and a custom tree-shaking verification script. Run locally:
+Bundle budgets are enforced via [size-limit](https://github.com/ai/size-limit) and a custom tree-shaking verification script. Run locally:
 
 ```bash
 pnpm size          # Report current sizes
@@ -125,7 +125,7 @@ pnpm size:check    # Fail if any limit is exceeded
 
 ## Re-exports
 
-This package re-exports key items from `@identity-verification/headless` and `@identity-verification/core` for convenience — theme utilities, adapters, the verification reducer, and core types are all accessible directly.
+This package re-exports key items from `@identity-verification/headless` and `@identity-verification/core` for convenience — theme utilities, browser adapters, the verification reducer, and core types are all accessible directly from `@identity-verification/react`.
 
 ## Development
 

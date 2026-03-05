@@ -25,32 +25,46 @@ const result = await getIdentityData({
     postalCode: '94102',
   },
 });
-
-// result: { selfieUrl, phone, address, score, status: 'verified' | 'failed' }
+// → { selfieUrl, phone: '+14155552671', address, score: 85, status: 'verified' }
 ```
 
 ## API
 
 ### `getIdentityData(input, options?)`
 
-Main orchestrator. Validates all input fields, generates a verification score, and returns identity data.
+Main orchestrator. Validates all input fields, simulates API latency, generates a verification score, and returns the final `IdentityData` object.
+
+Throws `VerificationError` with a typed error code if input is invalid.
 
 | Option              | Type     | Default | Description                           |
 | ------------------- | -------- | ------- | ------------------------------------- |
 | `simulatedLatencyMs`| `number` | `1500`  | Simulated API delay. Set `0` in tests.|
-| `seed`              | `number` | —       | Deterministic scoring for tests.      |
+| `seed`              | `number` | —       | Deterministic scoring seed for tests. |
+
+### `generateVerificationScore(seed?)`
+
+Generates a score between 0 and 100 with a weighted distribution:
+- **~30% chance** of failure (score 0–49)
+- **~70% chance** of success (score 50–100)
+
+Pass an optional `seed` for deterministic output in tests (uses Mulberry32 PRNG).
 
 ### `validatePhone(phone, countryCode)`
 
-Returns `{ valid, errors }` for a phone number against country-specific rules (length, format).
+Returns `{ valid, errors }` for a phone number against country-specific rules (digit count, format). Handles dial-code stripping and leading-zero normalization.
 
 ### `validateAddress(address, countryCode?)`
 
-Returns `{ valid, errors }` with per-field validation including postal code regex matching.
+Returns `{ valid, errors }` with per-field validation. When a `countryCode` is provided and the country has a `postalRegex`, the postal code is validated against it.
 
 ### `normalizeToE164(phone, countryCode)`
 
 Converts a local phone number to E.164 international format.
+
+```typescript
+normalizeToE164('(415) 555-2671', 'US') // → '+14155552671'
+normalizeToE164('07911123456', 'GB')     // → '+447911123456'
+```
 
 ### `COUNTRIES`
 
@@ -58,15 +72,11 @@ Static dataset of ~20 countries with dial codes, flag emojis, phone length rules
 
 ### `findCountryByCode(code)` / `findCountriesByDialCode(dialCode)`
 
-Helpers to look up country data.
-
-### `generateVerificationScore(input)`
-
-Produces a numeric verification score from the provided input.
+Helpers to look up country data by ISO 3166-1 alpha-2 code or dial code.
 
 ### `VerificationError`
 
-Custom error class with typed error codes (`VerificationErrorCode`).
+Custom error class with a typed `code` property (`'SELFIE_MISSING' | 'PHONE_INVALID' | 'ADDRESS_INCOMPLETE' | 'VALIDATION_FAILED'`) and optional `details` array of per-field validation errors.
 
 ## Types
 

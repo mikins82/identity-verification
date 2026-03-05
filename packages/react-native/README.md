@@ -1,5 +1,7 @@
 # @identity-verification/react-native
 
+> **Proof of concept** — This package demonstrates that the SDK architecture extends to React Native. It mirrors the web React SDK's API surface and shares the same headless layer, but has not been tested against a production React Native app. A companion demo app can be added in the future.
+
 React Native components for identity verification — selfie capture, phone input, address form, and a complete verification flow.
 
 ## Installation
@@ -131,7 +133,7 @@ function MyComponent() {
        └── @identity-verification/core (validation, API)
 ```
 
-Platform-specific adapters are imported from `@identity-verification/headless/react-native`.
+Platform-specific adapters are imported from `@identity-verification/headless/react-native`. The shared headless layer means validation, scoring, state machine logic, and theme types are identical between web and mobile.
 
 ## Development
 

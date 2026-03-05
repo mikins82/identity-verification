@@ -1,18 +1,16 @@
 # @identity-verification/headless
 
-Headless identity verification SDK — state machines, platform adapters, and theme definitions. Framework-agnostic building blocks that power the React package (or any custom UI).
+Platform-agnostic state machines, adapters, and theme definitions that sit between `@identity-verification/core` and the framework-specific UI packages (`react`, `react-native`). This package exists so the same verification logic, camera abstractions, and theming system can drive both web and mobile without duplication.
 
 ## Installation
 
 ```bash
-pnpm add @identity-verification/headless
+pnpm add @identity-verification/headless @identity-verification/core
 ```
-
-Peer dependency: `@identity-verification/core`
 
 ## Overview
 
-This package sits between the pure-logic `core` and framework-specific UI packages. It provides:
+This package provides:
 
 - **Verification state machine** — a reducer-based state machine that drives the multi-step verification flow
 - **Platform adapters** — abstractions for camera, permissions, and locale with browser implementations included
@@ -28,7 +26,7 @@ import { verificationReducer, initialVerificationState } from '@identity-verific
 const nextState = verificationReducer(currentState, action);
 ```
 
-Manages the verification flow state transitions (selfie capture, phone input, address entry, submission).
+A reducer-based state machine that manages multi-step verification flow transitions: selfie capture → phone input → address entry → submission. Includes `canAdvance()` guards that delegate to `core` validators.
 
 ### Adapters
 
@@ -57,7 +55,7 @@ const adapters = createBrowserAdapters();
 import { cameraController } from '@identity-verification/headless';
 ```
 
-High-level camera control logic (start, stop, switch facing mode, capture frame).
+High-level camera control logic (start, stop, switch facing mode, capture frame). Works with any `CameraAdapter` implementation.
 
 ### Theme
 

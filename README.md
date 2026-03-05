@@ -1,6 +1,6 @@
 # Identity Verification SDK + SkyRent Drones
 
-A layered identity verification SDK with a demo drone rental application showcasing its usage.
+A layered identity verification SDK with a demo drone rental application showcasing its integration.
 
 ## Architecture
 
@@ -13,33 +13,37 @@ graph TB
 
   subgraph sdk [SDK Packages]
     ReactPkg["@identity-verification/react"]
+    HeadlessPkg["@identity-verification/headless"]
     CorePkg["@identity-verification/core"]
   end
 
   DemoApp --> ReactPkg
   ThirdParty --> ReactPkg
-  ReactPkg --> CorePkg
+  ReactPkg --> HeadlessPkg
+  HeadlessPkg --> CorePkg
 ```
 
-**`@identity-verification/core`** — Pure TypeScript. Types, validation (phone, address), scoring, country data. Zero dependencies, runs in any JS environment.
+The SDK is split into three layers so each can be consumed independently:
 
-**`@identity-verification/react`** — React components (SelfieCapture, PhoneInput, AddressForm, VerificationFlow), theming via CSS custom properties, camera hooks. Peer-depends on React 18+.
+**`@identity-verification/core`** — Pure TypeScript. Types, validation (phone, address), verification scoring, and country data. Zero runtime dependencies; runs in any JS environment.
 
-**`apps/web`** — SkyRent Drones demo app. Vite + React + Tailwind v4 + shadcn/ui + Zustand + React Router.
+**`@identity-verification/headless`** — Platform-agnostic state machines, camera/permission adapters (browser + React Native), and theme-to-CSS-custom-property mapping. Sits between `core` and the UI packages so the same logic drives both web and mobile.
 
-**`@identity-verification/headless`** *(scaffolded — not part of current deliverable)* — Platform-agnostic state machines, camera/permission adapters (browser + React Native), and theme-to-CSS-custom-property mapping. Designed as the shared logic layer that `react` and `react-native` can both consume.
+**`@identity-verification/react`** — React components (`SelfieCapture`, `PhoneInput`, `AddressForm`, `VerificationFlow`), theming via CSS custom properties, and camera hooks. Peer-depends on React 18+.
 
-**`@identity-verification/react-native`** *(proof of concept — not part of current deliverable)* — React Native mirror of the React SDK (SelfieCapture, PhoneInput, AddressForm, VerificationFlow) built on top of `headless`. Included to demonstrate that the architecture extends to mobile; a companion demo app can be added in the future.
+**`@identity-verification/react-native`** *(proof of concept)* — React Native mirror of the React SDK built on top of `headless`. Included to demonstrate that the architecture extends to mobile; not part of the current deliverable.
+
+**`apps/web`** — SkyRent Drones demo application that integrates the SDK end-to-end.
 
 ### Monorepo Structure
 
 ```
-incode-task/
+identity-verification-sdk/
   packages/
-    core/               # @identity-verification/core — Pure TypeScript
+    core/               # @identity-verification/core  — Pure TypeScript
+    headless/           # @identity-verification/headless — State machines & adapters
     react/              # @identity-verification/react — React components
-    headless/           # @identity-verification/headless — State machines & adapters (scaffolded)
-    react-native/       # @identity-verification/react-native — React Native components (proof of concept)
+    react-native/       # @identity-verification/react-native — React Native (proof of concept)
   apps/
     web/                # SkyRent Drones demo app
 ```
@@ -60,21 +64,24 @@ pnpm dev
 
 This starts all packages in dev/watch mode via Turborepo:
 - **core**: `tsup --watch` (rebuilds on TS changes)
+- **headless**: `tsup --watch`
 - **react**: `vite build --watch` (rebuilds on TSX/CSS changes)
 - **web**: Vite dev server at `http://localhost:5173`
 
 ### Build
 
 ```bash
-pnpm build         # Build all packages (core → react → web)
+pnpm build         # Build all packages (core → headless → react → web)
 ```
 
 ### Test
 
 ```bash
-pnpm test:unit     # Vitest unit tests (core + react)
+pnpm test:unit     # Vitest unit tests (core + headless + react + web)
 pnpm test:e2e      # Playwright E2E tests (starts dev server automatically)
 ```
+
+Unit tests cover SDK validation, scoring, state machines, React components, and demo app stores/hooks/utilities. E2E tests cover the full user flow across Chromium, Firefox, and WebKit, including responsive viewports.
 
 ### Release (Changesets)
 
@@ -100,7 +107,7 @@ pnpm format        # Prettier formatting
 
 #### `getIdentityData(input, options?)`
 
-Main orchestrator. Validates input, generates a score, returns identity data.
+Main orchestrator. Validates all input fields, simulates API latency, generates a randomized verification score, and returns the final identity data object.
 
 ```typescript
 import { getIdentityData } from '@identity-verification/core';
@@ -111,23 +118,45 @@ const result = await getIdentityData({
   countryCode: 'US',
   address: { street: '123 Main St', city: 'SF', state: 'CA', country: 'US', postalCode: '94102' }
 });
-
-// result: { selfieUrl, phone, address, score, status: 'verified' | 'failed' }
+// → { selfieUrl, phone: '+14155552671', address, score: 85, status: 'verified' }
 ```
 
+**Return format:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `selfieUrl` | `string` | Base64 image data URL |
+| `phone` | `string` | E.164 format (e.g. `+14155552671`) |
+| `address` | `Address` | `{ street, city, state, country, postalCode }` |
+| `score` | `number` | 0–100 |
+| `status` | `'verified' \| 'failed'` | `'verified'` if score >= 50, `'failed'` otherwise |
+
 **Options:**
+
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `simulatedLatencyMs` | `number` | `1500` | Simulated API delay. Set `0` for tests. |
-| `seed` | `number` | — | Deterministic scoring for tests. |
+| `seed` | `number` | — | Deterministic scoring seed for tests. |
+
+#### Verification Scoring
+
+`generateVerificationScore(seed?)` produces scores with a weighted distribution:
+- **~30% chance** of failure (score 0–49)
+- **~70% chance** of success (score 50–100)
+
+The function uses a first random draw to determine pass/fail, then a second draw within the appropriate range. An optional `seed` parameter enables deterministic output for tests via a Mulberry32 PRNG.
 
 #### `validatePhone(phone, countryCode)`
 
-Returns `{ valid, errors }` for a phone number against country rules.
+Returns `{ valid, errors }` for a phone number against country-specific rules (digit count, format).
 
 #### `validateAddress(address, countryCode?)`
 
-Returns `{ valid, errors }` with per-field validation.
+Returns `{ valid, errors }` with per-field validation including country-specific postal code regex matching.
+
+#### `normalizeToE164(phone, countryCode)`
+
+Converts a local phone number to E.164 format (e.g. `(415) 555-2671` → `+14155552671`).
 
 #### `COUNTRIES`
 
@@ -153,12 +182,10 @@ import { SelfieCapture, PhoneInput, AddressForm } from '@identity-verification/r
 import { getIdentityData } from '@identity-verification/core';
 import '@identity-verification/react/styles.css';
 
-// Compose individually — full control over layout and flow
 <SelfieCapture onCapture={(base64) => setSelfie(base64)} />
 <PhoneInput onChange={(phone, country) => setPhone(phone)} />
 <AddressForm onChange={(address) => setAddress(address)} />
 
-// Then call getIdentityData() when ready
 const result = await getIdentityData({ selfie, phone, countryCode, address });
 ```
 
@@ -168,11 +195,13 @@ const result = await getIdentityData({ selfie, phone, countryCode, address });
 import { VerificationFlow, ThemeProvider } from '@identity-verification/react';
 import '@identity-verification/react/styles.css';
 
-<VerificationFlow
-  onComplete={(result) => console.log(result)}
-  onStepChange={(step) => console.log('Step:', step)}
-  verificationOptions={{ simulatedLatencyMs: 1500 }}
-/>
+<ThemeProvider theme={{ colors: { primary: '#7c3aed' } }}>
+  <VerificationFlow
+    onComplete={(result) => handleVerified(result)}
+    onStepChange={(step) => trackAnalytics(step)}
+    verificationOptions={{ simulatedLatencyMs: 1500 }}
+  />
+</ThemeProvider>
 ```
 
 ## Theming
@@ -231,13 +260,38 @@ The React SDK ships with `preserveModules` enabled, so each component is a separ
 
 Sizes exclude peer dependencies (`react`, `react-dom`) and sibling SDK packages.
 
-Bundle budgets are enforced in CI via [size-limit](https://github.com/ai/size-limit), and a tree-shaking verification script confirms no cross-component code leakage.
+Bundle budgets are enforced via [size-limit](https://github.com/ai/size-limit), and a tree-shaking verification script confirms no cross-component code leakage.
 
 ```bash
 pnpm size              # Report sizes for @identity-verification/react
 pnpm size:check        # Fail if any budget is exceeded
 pnpm verify:treeshake  # Prove PhoneInput doesn't pull in camera code
 ```
+
+## Demo App — SkyRent Drones
+
+### User Flow
+
+```
+/ (Catalog) → /cart → /verify → /verify/result → /checkout → /checkout/confirmation
+```
+
+1. **Browse & Select** — Drone catalog with category tabs (Filming / Cargo), daily pricing, specs, and a day-count stepper. Add drones to cart.
+2. **Identity Verification** — Three-step wizard using SDK components: selfie capture → phone input → address form. Calls `getIdentityData()` on submit.
+3. **Verification Result** — Displays selfie, phone, address, score bar, and pass/fail status. If failed, user can retry or return to cart. If passed, proceed to checkout.
+4. **Checkout** — Order summary with selected drones, rental duration, total price, and verified identity card. "Complete Rental" button confirms the order.
+5. **Confirmation** — Order ID, itemized receipt, and a link to browse more drones.
+
+### Demo App Highlights
+
+| Feature | Implementation |
+|---------|---------------|
+| State management | Zustand with persistence (cart → `localStorage`, verification → `sessionStorage`) |
+| Routing | React Router v7 with lazy-loaded pages and route guards (`useRouteGuard`) |
+| Error handling | App-level `ErrorBoundary` + component-level boundary around verification |
+| Accessibility | `aria-live` announcer for step transitions, cart changes, and item removal; `RouteGuardPending` loading state instead of flash-of-nothing |
+| Code splitting | `React.lazy` for all pages except the catalog (first paint) |
+| UI | Tailwind v4 + shadcn/ui (Radix primitives) + Lucide icons |
 
 ## Tech Stack
 
@@ -248,22 +302,13 @@ pnpm verify:treeshake  # Prove PhoneInput doesn't pull in camera code
 | Core build | tsup (ESM + CJS + .d.ts) |
 | React build | Vite library mode (CSS Modules + ESM + CJS + .d.ts) |
 | Component styling | CSS Modules + CSS custom properties |
-| Demo app | Vite + React 18 + Tailwind v4 + shadcn/ui |
-| State | Zustand |
+| Demo app | Vite + React 19 + Tailwind v4 + shadcn/ui |
+| State | Zustand 5 |
 | Routing | React Router v7 |
 | Unit tests | Vitest + React Testing Library |
-| E2E tests | Playwright |
-
-## Demo App Flow
-
-```
-/ (Catalog) → /cart → /verify → /verify/result → /checkout → /checkout/confirmation
-```
-
-1. Browse and add drones to cart (filming + cargo categories)
-2. Proceed to identity verification (selfie → phone → address)
-3. View verification result (pass/fail with score)
-4. Complete checkout (if verified)
+| E2E tests | Playwright (Chromium, Firefox, WebKit) |
+| Bundle analysis | size-limit |
+| Versioning | Changesets |
 
 ## Browser Support
 
