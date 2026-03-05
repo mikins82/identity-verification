@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Drone } from "@/data/drones";
 import { isCargoDrone, isFilmingDrone } from "@/data/drones";
+import { calcDays, formatDateRange } from "@/lib/dateUtils";
 import { formatCurrency } from "@/lib/formatCurrency";
-import { Camera, Clock, Droplets, Navigation, Package, ShieldCheck } from "lucide-react";
+import { useCartStore } from "@/store/cartStore";
+import { Calendar, Camera, Clock, Droplets, Navigation, Package, ShieldCheck } from "lucide-react";
 import { memo, useState } from "react";
 
 export interface DroneCardProps {
@@ -14,6 +16,7 @@ export interface DroneCardProps {
 
 export const DroneCard = memo(function DroneCard({ drone }: DroneCardProps) {
   const [imageError, setImageError] = useState(false);
+  const cartItem = useCartStore((s) => s.items.find((i) => i.drone.id === drone.id));
 
   return (
     <Link to={`/drone/${drone.id}`} className="block">
@@ -42,6 +45,15 @@ export const DroneCard = memo(function DroneCard({ drone }: DroneCardProps) {
           >
             {drone.category === "filming" ? "Filming" : "Cargo"}
           </Badge>
+          {cartItem && (
+            <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded-md bg-background/90 px-2 py-1 text-xs font-medium shadow-sm backdrop-blur-sm">
+              <Calendar className="h-3 w-3 text-muted-foreground" />
+              <span>{formatDateRange(cartItem.startDate, cartItem.endDate)}</span>
+              <span className="text-muted-foreground">
+                ({calcDays(cartItem.startDate, cartItem.endDate)}d)
+              </span>
+            </div>
+          )}
         </div>
 
         <CardHeader className="pb-2">
