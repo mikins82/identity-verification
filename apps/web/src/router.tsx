@@ -6,6 +6,7 @@ import { VerifyPage } from "@/pages/VerifyPage";
 import { VerifyResultPage } from "@/pages/VerifyResultPage";
 import { CheckoutPage } from "@/pages/CheckoutPage";
 import { ConfirmationPage } from "@/pages/ConfirmationPage";
+import { NotFoundPage } from "@/pages/NotFoundPage";
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ export const router = createBrowserRouter([
       { path: "verify/result", element: <VerifyResultPage /> },
       { path: "checkout", element: <CheckoutPage /> },
       { path: "checkout/confirmation", element: <ConfirmationPage /> },
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
 ]);
