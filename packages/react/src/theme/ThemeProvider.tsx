@@ -3,14 +3,23 @@ import {
   defaultTheme,
   themeToCustomProperties,
   type Theme,
+  type ThemeColors,
+  type ThemeSpacing,
 } from "@identity-verification/headless";
 
+export type PartialTheme = {
+  colors?: Partial<ThemeColors>;
+  spacing?: Partial<ThemeSpacing>;
+  borderRadius?: string;
+  fontFamily?: string;
+};
+
 export interface ThemeProviderProps {
-  theme?: Partial<Theme>;
+  theme?: PartialTheme;
   children: ReactNode;
 }
 
-function mergeTheme(base: Theme, override: Partial<Theme>): Theme {
+function mergeTheme(base: Theme, override: PartialTheme): Theme {
   return {
     colors: { ...base.colors, ...override.colors },
     spacing: { ...base.spacing, ...override.spacing },

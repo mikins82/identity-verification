@@ -19,7 +19,7 @@ export { Dropdown } from "./components/shared/Dropdown";
 export type { DropdownProps } from "./components/shared/Dropdown";
 
 export { ThemeProvider } from "./theme/ThemeProvider";
-export type { ThemeProviderProps } from "./theme/ThemeProvider";
+export type { ThemeProviderProps, PartialTheme } from "./theme/ThemeProvider";
 
 export { useCamera } from "./hooks/useCamera";
 export { useMediaPermission } from "./hooks/useMediaPermission";

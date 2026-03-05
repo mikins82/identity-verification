@@ -68,15 +68,18 @@ identity-verification-sdk/
 ### Install & Run
 
 ```bash
+pnpm init             # Install deps, build all packages, then start dev (one command)
+# or step by step:
 pnpm install
+pnpm build            # One-time build so downstream packages have type declarations
 pnpm dev
 ```
 
-This starts all packages in dev/watch mode via Turborepo:
+`pnpm dev` builds each package's dependencies first (via Turborepo's `dependsOn: ["^build"]`), then starts watch mode:
 - **core**: `tsup --watch` (rebuilds on TS changes)
 - **headless**: `tsup --watch`
 - **react**: `vite build --watch` (rebuilds on TSX/CSS changes)
-- **web**: Vite dev server at `http://localhost:5173`
+- **web**: Vite dev server at `http://localhost:3000`
 
 ### Build
 
