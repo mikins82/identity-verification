@@ -5,15 +5,21 @@ import { Button } from "@/components/ui/button";
 import { RouteGuardPending } from "@/components/ui/route-guard-pending";
 import { CheckoutSummary } from "@/components/checkout/CheckoutSummary";
 import { useRouteGuard } from "@/hooks/useRouteGuard";
+import { useCartStore } from "@/store/cartStore";
+import { useVerificationStore } from "@/store/verificationStore";
 
 export default function CheckoutPage() {
   const allowed = useRouteGuard({ requireCart: true, requireVerified: true });
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
+  const completeOrder = useCartStore((s) => s.completeOrder);
+  const resetVerification = useVerificationStore((s) => s.reset);
 
   const handleComplete = async () => {
     setIsProcessing(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
+    completeOrder();
+    resetVerification();
     navigate("/checkout/confirmation");
   };
 

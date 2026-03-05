@@ -1,46 +1,19 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { ConfirmationScreen } from "@/components/checkout/ConfirmationScreen";
-import { useCartStore, selectTotalPrice } from "@/store/cartStore";
-import { useVerificationStore } from "@/store/verificationStore";
-
-function generateOrderId(): string {
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return `SR-${timestamp}-${random}`;
-}
+import { useCartStore } from "@/store/cartStore";
 
 export default function ConfirmationPage() {
   const navigate = useNavigate();
-  const items = useCartStore((s) => s.items);
-  const totalPrice = useCartStore(selectTotalPrice);
-  const isVerified = useVerificationStore(
-    (s) => s.identityData?.status === "verified",
-  );
-  const clearCart = useCartStore((s) => s.clear);
-  const resetVerification = useVerificationStore((s) => s.reset);
-
-  const orderId = useMemo(() => generateOrderId(), []);
-  const snapshot = useRef({ items, totalPrice });
-  const hasCleaned = useRef(false);
+  const completedOrder = useCartStore((s) => s.completedOrder);
 
   useEffect(() => {
-    if (!isVerified && items.length === 0 && hasCleaned.current) return;
-
-    if (!isVerified || items.length === 0) {
+    if (!completedOrder) {
       navigate("/", { replace: true });
-      return;
     }
+  }, [completedOrder, navigate]);
 
-    if (!hasCleaned.current) {
-      snapshot.current = { items, totalPrice };
-      hasCleaned.current = true;
-      clearCart();
-      resetVerification();
-    }
-  }, [isVerified, items.length, navigate, clearCart, resetVerification, items, totalPrice]);
-
-  if (!hasCleaned.current && (items.length === 0 || !isVerified)) return null;
+  if (!completedOrder) return null;
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -49,9 +22,9 @@ export default function ConfirmationPage() {
       </h1>
 
       <ConfirmationScreen
-        orderId={orderId}
-        items={snapshot.current.items}
-        totalPrice={snapshot.current.totalPrice}
+        orderId={completedOrder.orderId}
+        items={completedOrder.items}
+        totalPrice={completedOrder.totalPrice}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { useCartStore, selectTotalPrice, selectItemCount } from "../cartStore";
+import { useCartStore, selectTotalPrice, selectItemCount, type CompletedOrder } from "../cartStore";
 import type { Drone } from "@/data/drones";
 
 const filmingDrone: Drone = {
@@ -38,7 +38,7 @@ function getState() {
 
 describe("cartStore", () => {
   beforeEach(() => {
-    useCartStore.setState({ items: [] });
+    useCartStore.setState({ items: [], completedOrder: null });
   });
 
   describe("addItem", () => {
@@ -129,6 +129,51 @@ describe("cartStore", () => {
       getState().clear();
 
       expect(getState().items).toEqual([]);
+    });
+  });
+
+  describe("completeOrder", () => {
+    it("snapshots items and totalPrice into completedOrder", () => {
+      getState().addItem(filmingDrone, 2);
+      getState().addItem(cargoDrone, 3);
+      getState().completeOrder();
+
+      const order = getState().completedOrder as CompletedOrder;
+      expect(order).not.toBeNull();
+      expect(order.items).toHaveLength(2);
+      expect(order.totalPrice).toBe(89 * 2 + 99 * 3);
+      expect(order.orderId).toMatch(/^SR-.+-\w+$/);
+    });
+
+    it("clears the cart atomically", () => {
+      getState().addItem(filmingDrone);
+      getState().completeOrder();
+
+      expect(getState().items).toEqual([]);
+    });
+
+    it("generates a unique orderId", () => {
+      getState().addItem(filmingDrone);
+      getState().completeOrder();
+      const first = getState().completedOrder!.orderId;
+
+      useCartStore.setState({ items: [], completedOrder: null });
+      getState().addItem(cargoDrone);
+      getState().completeOrder();
+      const second = getState().completedOrder!.orderId;
+
+      expect(first).not.toBe(second);
+    });
+  });
+
+  describe("clearCompletedOrder", () => {
+    it("resets completedOrder to null", () => {
+      getState().addItem(filmingDrone);
+      getState().completeOrder();
+      expect(getState().completedOrder).not.toBeNull();
+
+      getState().clearCompletedOrder();
+      expect(getState().completedOrder).toBeNull();
     });
   });
 });
