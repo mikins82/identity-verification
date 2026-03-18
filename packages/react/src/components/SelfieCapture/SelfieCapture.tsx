@@ -97,11 +97,11 @@ export function SelfieCapture({
         <div className={styles.error} role="alert">
           <p className={styles.errorTitle}>
             {state.error.type === "not-supported" && "Camera Not Available"}
-            {state.error.type === "permission-denied" && "Camera Access Denied"}
+            {(state.error.type === "permission-denied" || state.error.type === "permission-blocked") && "Camera Access Denied"}
             {state.error.type === "stream-error" && "Camera Error"}
           </p>
           <p className={styles.errorMessage}>{state.error.message}</p>
-          {state.error.type !== "not-supported" && (
+          {state.error.type !== "not-supported" && state.error.type !== "permission-blocked" && (
             <button type="button" className={styles.retryButton} onClick={retry}>
               Try Again
             </button>

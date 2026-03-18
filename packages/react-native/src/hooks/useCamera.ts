@@ -7,6 +7,7 @@ import {
 } from "@identity-verification/headless";
 import {
   ReactNativeCameraAdapter,
+  ReactNativePermissionAdapter,
   capturePhoto,
 } from "@identity-verification/headless/react-native";
 
@@ -48,7 +49,8 @@ export function useCamera(options: UseCameraOptions = {}): UseCameraReturn {
 
   useEffect(() => {
     const adapter = new ReactNativeCameraAdapter();
-    const controller = new CameraController(adapter, { facingMode, imageQuality });
+    const permission = new ReactNativePermissionAdapter();
+    const controller = new CameraController(adapter, { facingMode, imageQuality, permission });
     controllerRef.current = controller;
 
     const unsub = controller.subscribe(setState);

@@ -5,7 +5,7 @@ import {
   type CameraError,
   type CameraOptions,
 } from "@identity-verification/headless";
-import { BrowserCameraAdapter } from "@identity-verification/headless/web";
+import { BrowserCameraAdapter, BrowserPermissionAdapter } from "@identity-verification/headless/web";
 
 export type { CameraState, CameraError };
 
@@ -30,9 +30,11 @@ export function useCamera(options: UseCameraOptions = {}): UseCameraReturn {
 
   useEffect(() => {
     const adapter = new BrowserCameraAdapter();
+    const permission = new BrowserPermissionAdapter();
     const controller = new CameraController<MediaStream>(adapter, {
       facingMode,
       imageQuality,
+      permission,
     });
     controllerRef.current = controller;
 

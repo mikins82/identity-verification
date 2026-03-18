@@ -55,6 +55,11 @@ function clearCameraMocks() {
     writable: true,
     configurable: true,
   });
+  Object.defineProperty(navigator, "permissions", {
+    value: undefined,
+    writable: true,
+    configurable: true,
+  });
 }
 
 describe("SelfieCapture", () => {
@@ -252,5 +257,30 @@ describe("SelfieCapture", () => {
     await waitFor(() => {
       expect(getUserMedia).toHaveBeenCalledTimes(2);
     });
+  });
+
+  it("hides Try Again and shows blocked message when permission is persistently denied", async () => {
+    const getUserMedia = vi.fn().mockRejectedValue(new DOMException("", "NotAllowedError"));
+    Object.defineProperty(navigator, "mediaDevices", {
+      value: { getUserMedia },
+      writable: true,
+      configurable: true,
+    });
+
+    const permissionStatus = { state: "denied", addEventListener: vi.fn(), removeEventListener: vi.fn() };
+    Object.defineProperty(navigator, "permissions", {
+      value: { query: vi.fn().mockResolvedValue(permissionStatus) },
+      writable: true,
+      configurable: true,
+    });
+
+    render(<SelfieCapture onCapture={vi.fn()} />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Camera Access Denied")).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("Try Again")).not.toBeInTheDocument();
+    expect(screen.getByText(/browser or device settings/)).toBeInTheDocument();
   });
 });

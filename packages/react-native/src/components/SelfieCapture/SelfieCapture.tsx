@@ -133,7 +133,7 @@ export function SelfieCapture({
           style={[styles.errorTitle, { color: theme.colors.error, fontFamily: theme.fontFamily }]}
         >
           {state.error.type === "not-supported" && "Camera Not Available"}
-          {state.error.type === "permission-denied" && "Camera Access Denied"}
+          {(state.error.type === "permission-denied" || state.error.type === "permission-blocked") && "Camera Access Denied"}
           {state.error.type === "stream-error" && "Camera Error"}
         </Text>
         <Text
@@ -144,7 +144,7 @@ export function SelfieCapture({
         >
           {state.error.message}
         </Text>
-        {state.error.type !== "not-supported" && (
+        {state.error.type !== "not-supported" && state.error.type !== "permission-blocked" && (
           <Pressable
             onPress={retry}
             style={[

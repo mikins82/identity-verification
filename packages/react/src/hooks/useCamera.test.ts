@@ -55,6 +55,11 @@ function clearCameraMocks() {
     writable: true,
     configurable: true,
   });
+  Object.defineProperty(navigator, "permissions", {
+    value: undefined,
+    writable: true,
+    configurable: true,
+  });
 }
 
 describe("useCamera", () => {

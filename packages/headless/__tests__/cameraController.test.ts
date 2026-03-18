@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { CameraController } from "../src/cameraController";
 import type { CameraAdapter, CameraStreamOptions } from "../src/adapters/camera";
+import type { PermissionAdapter, PermissionState } from "../src/adapters/permission";
 import type { CameraState } from "../src/cameraController";
 
 type MockStream = { id: string };
@@ -14,6 +15,15 @@ function createMockAdapter(
     captureFrame: vi.fn(() => "data:image/jpeg;base64,captured"),
     stopStream: vi.fn(),
     ...overrides,
+  };
+}
+
+function createMockPermission(
+  state: PermissionState = "prompt",
+): PermissionAdapter {
+  return {
+    query: vi.fn(async () => state),
+    subscribe: vi.fn(() => () => {}),
   };
 }
 
@@ -130,6 +140,35 @@ describe("CameraController", () => {
       });
     });
 
+    it("sets permission-blocked when permission adapter reports denied", async () => {
+      const err = new DOMException("User denied", "NotAllowedError");
+      adapter = createMockAdapter({ requestStream: vi.fn(async () => { throw err; }) });
+      const permission = createMockPermission("denied");
+      controller = new CameraController(adapter, { permission });
+
+      await controller.start();
+
+      expect(controller.state).toEqual({
+        status: "error",
+        error: { type: "permission-blocked", message: expect.any(String) },
+      });
+      expect(permission.query).toHaveBeenCalled();
+    });
+
+    it("sets permission-denied when permission adapter reports prompt", async () => {
+      const err = new DOMException("User denied", "NotAllowedError");
+      adapter = createMockAdapter({ requestStream: vi.fn(async () => { throw err; }) });
+      const permission = createMockPermission("prompt");
+      controller = new CameraController(adapter, { permission });
+
+      await controller.start();
+
+      expect(controller.state).toEqual({
+        status: "error",
+        error: { type: "permission-denied", message: expect.any(String) },
+      });
+    });
+
     it("sets stream-error for other exceptions", async () => {
       adapter = createMockAdapter({
         requestStream: vi.fn(async () => { throw new DOMException("Busy", "NotReadableError"); }),
@@ -236,7 +275,7 @@ describe("CameraController", () => {
   });
 
   describe("retry()", () => {
-    it("stops stream and restarts after an error", async () => {
+    it("stops stream and restarts after a transient error", async () => {
       const err = new DOMException("Busy", "NotReadableError");
       let callCount = 0;
       adapter = createMockAdapter({
@@ -253,6 +292,58 @@ describe("CameraController", () => {
 
       await controller.retry();
       expect(controller.state).toEqual({ status: "streaming" });
+    });
+
+    it("sets permission-blocked instead of retrying when permission is denied", async () => {
+      const err = new DOMException("User denied", "NotAllowedError");
+      adapter = createMockAdapter({ requestStream: vi.fn(async () => { throw err; }) });
+      const permission = createMockPermission("denied");
+      controller = new CameraController(adapter, { permission });
+
+      await controller.start();
+      expect(controller.state.status).toBe("error");
+
+      await controller.retry();
+
+      expect(controller.state).toEqual({
+        status: "error",
+        error: { type: "permission-blocked", message: expect.any(String) },
+      });
+      expect(adapter.requestStream).toHaveBeenCalledTimes(1);
+    });
+
+    it("retries normally when permission adapter reports prompt", async () => {
+      const err = new DOMException("User denied", "NotAllowedError");
+      let callCount = 0;
+      adapter = createMockAdapter({
+        requestStream: vi.fn(async () => {
+          callCount++;
+          if (callCount === 1) throw err;
+          return { id: "retry-stream" };
+        }),
+      });
+      const permission = createMockPermission("prompt");
+      controller = new CameraController(adapter, { permission });
+
+      await controller.start();
+      expect(controller.state.status).toBe("error");
+
+      await controller.retry();
+      expect(controller.state).toEqual({ status: "streaming" });
+      expect(adapter.requestStream).toHaveBeenCalledTimes(2);
+    });
+
+    it("does nothing when already destroyed", async () => {
+      adapter = createMockAdapter({
+        requestStream: vi.fn(async () => { throw new DOMException("Busy", "NotReadableError"); }),
+      });
+      controller = new CameraController(adapter);
+
+      await controller.start();
+      controller.destroy();
+      await controller.retry();
+
+      expect(adapter.requestStream).toHaveBeenCalledTimes(1);
     });
   });
 
